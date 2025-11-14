@@ -47,7 +47,6 @@ def get_batch_edge_index(org_edge_index, batch_num, node_num):
 
 
 
-
 class OutLayer(nn.Module):
     def __init__(self, in_num, node_num, layer_num, inter_num = 512):
         super(OutLayer, self).__init__()
@@ -128,7 +127,7 @@ class GDN(nn.Module):
         # ])
 
         if use_nas:
-            # 保证输出维度仍为 dim，方便后续 OutLayer(dim*edge_set_num, …
+            # 保证输出维度仍为 dim，方便后续 OutLayer
               self.searchable_gnn = SearchableGNNLayer(
                   input_dim=input_dim,
                   model_dim=dim,
@@ -190,28 +189,75 @@ class GDN(nn.Module):
         else:
             gcn_outs = []
             for i, edge_index in enumerate(edge_index_sets):
-                batch_edge_index = get_batch_edge_index(edge_index, batch_num, node_num).to(device)
+                edge_num = edge_index.shape[1]
+                cache_edge_index = self.cache_edge_index_sets[i]
+
+                if cache_edge_index is None or cache_edge_index.shape[1] != edge_num*batch_num:
+                    self.cache_edge_index_sets[i] = get_batch_edge_index(edge_index, batch_num, node_num).to(device)
+
+                batch_edge_index = self.cache_edge_index_sets[i]
+
+                #  self.embedding 获取每个节点的嵌入向量
                 all_embeddings = self.embedding(torch.arange(node_num).to(device))
-                gcn_out = self.gnn_layers[i](
-                    x, batch_edge_index,
-                    node_num=node_num * batch_num,
-                    embedding=all_embeddings
-                )
+
+                weights_arr = all_embeddings.detach().clone()
+                all_embeddings = all_embeddings.repeat(batch_num, 1)
+
+                weights = weights_arr.view(node_num, -1)
+
+                # 计算节点间余弦相似度
+                cos_ji_mat = torch.matmul(weights, weights.T)
+                normed_mat = torch.matmul(weights.norm(dim=-1).view(-1,1), weights.norm(dim=-1).view(1,-1))
+                cos_ji_mat = cos_ji_mat / normed_mat
+
+                dim = weights.shape[-1]
+                topk_num = self.topk
+
+                #  选择Top-K相似节点
+                # dim=-1 表示在最后一个维度（即每个节点的相似度向量）上找top-k
+                # torch.topk 函数返回一个包含两个元素的元组：
+                # 第一个元素 [0]：top-k 的值（values）
+                # 第二个元素 [1]：top-k 的索引（indices）
+                # [1] 表示只取 torch.topk 返回结果中的索引部分，而不是值部分
+                topk_indices_ji = torch.topk(cos_ji_mat, topk_num, dim=-1)[1]
+
+                self.learned_graph = topk_indices_ji
+
+                gated_i = torch.arange(0, node_num).T.unsqueeze(1).repeat(1, topk_num).flatten().to(device).unsqueeze(0)
+                gated_j = topk_indices_ji.flatten().unsqueeze(0)
+                # 构建新的图连接关系 gated_edge_index
+                gated_edge_index = torch.cat((gated_j, gated_i), dim=0)
+
+                # 把单批次的图结构扩展到整个批次，得到整个批次的边索引
+                batch_gated_edge_index = get_batch_edge_index(gated_edge_index, batch_num, node_num).to(device)
+                # 调用第 i 个 GNNLayer 进行图卷积操作
+                gcn_out = self.gnn_layers[i](x, batch_gated_edge_index, node_num=node_num*batch_num, embedding=all_embeddings)
+
                 gcn_outs.append(gcn_out)
 
-            x = torch.cat(gcn_outs, dim=1)
-            x = x.view(batch_num, node_num, -1)
+        # 将多个 GNNLayer 的输出特征在特征维度上进行拼接 dim=1 表示在第1维度（特征维度）上拼接
+        x = torch.cat(gcn_outs, dim=1)
+        x = x.view(batch_num, node_num, -1)
 
-        # =====================================================
-        # Case 1 & Case 2 通用的输出层逻辑
-        # =====================================================
-        x = torch.mul(x, self.embedding(torch.arange(0, node_num).to(device)))
-        x = x.permute(0, 2, 1)
-        x = F.relu(self.bn_outlayer_in(x))
-        x = x.permute(0, 2, 1)
 
-        x = self.dp(x)
-        out = self.out_layer(x)
+        indexes = torch.arange(0,node_num).to(device)
+        # torch.mul 执行逐元素相乘，实现特征调制 即公式9
+        # PyTorch 会自动将 [27, 64] 的嵌入向量扩展到 [128, 27, 64]
+        out = torch.mul(x, self.embedding(indexes))
+
+
+        # out.permute(0,2,1) 将张量维度从 [batch_num, node_num, feature_dim]
+        # 调整为 [batch_num, feature_dim, node_num]
+        out = out.permute(0,2,1)
+        # 应用ReLU激活函数和批归一化
+        out = F.relu(self.bn_outlayer_in(out))
+        # 恢复维度
+        out = out.permute(0,2,1)
+        # dropout防止过拟合
+        out = self.dp(out)
+        # 通过输出层处理
+        out = self.out_layer(out)
+        # 输出重塑为二维张量，准备作为最终预测结果
         out = out.view(-1, node_num)
         return out
 
