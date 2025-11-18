@@ -35,10 +35,10 @@ class SearchableGNNLayer(nn.Module):
         # 搜索空间（可按需扩展/裁剪）
         if search_space is None:
             search_space = {
-                "depth": [1, 2, 3, 4, 5],  # 增加网络深度
+                "depth": [1, 2, 3],  # 增加网络深度
                 "op_candidates": ["GraphLayer", "GCN", "GAT", "SAGE", "GraphSAGE"],  # 增加GNN操作候选项
                 "hidden_candidates": [32, 64, 128],  # 增加隐藏层维度候选值
-                "skip_candidates": ["none", "residual", "dense"],  # 增加更多跳跃连接候选项
+                "skip_candidates": ["none", "residual"],  # 增加更多跳跃连接候选项
             }
         self.search_space = search_space
 
@@ -83,6 +83,9 @@ class SearchableGNNLayer(nn.Module):
         """
         self.depth = int(arch_config["depth"])
         assert self.depth >= 1
+        assert len(arch_config["ops"]) == self.depth, f"Length of ops ({len(arch_config['ops'])}) must match depth ({self.depth})"
+        assert len(arch_config["hidden_dims"]) == self.depth, f"Length of hidden_dims ({len(arch_config['hidden_dims'])}) must match depth ({self.depth})"
+
 
         self.ops = nn.ModuleList()
         self.bns = nn.ModuleList()
@@ -91,6 +94,9 @@ class SearchableGNNLayer(nn.Module):
 
         in_dim = self.input_dim
         for i in range(self.depth):
+            if i >= len(arch_config["ops"]):
+                raise IndexError(f"Index {i} out of range for ops list (length {len(arch_config['ops'])})")
+
             op_type = arch_config["ops"][i]
             out_dim = self.hidden_dims[i]
 

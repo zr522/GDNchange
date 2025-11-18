@@ -24,10 +24,18 @@ class GraphLayer(MessagePassing):
 
         self.lin = Linear(in_channels, heads * out_channels, bias=False)
 
+        # 推断 embedding 维度：假设 inter_dim = out_channels + embed_dim（如果被正确传入）
+        if inter_dim is not None and inter_dim > 0:
+            self.embed_dim = inter_dim - out_channels
+        else:
+            # 回退：如果没传 inter_dim，就假设 embed_dim == out_channels（兼容原始 GDN）
+            self.embed_dim = out_channels
+
+        # 特征部分和 embedding 部分各自的注意力参数
         self.att_i = Parameter(torch.Tensor(1, heads, out_channels))
         self.att_j = Parameter(torch.Tensor(1, heads, out_channels))
-        self.att_em_i = Parameter(torch.Tensor(1, heads, out_channels))
-        self.att_em_j = Parameter(torch.Tensor(1, heads, out_channels))
+        self.att_em_i = Parameter(torch.Tensor(1, heads, self.embed_dim))
+        self.att_em_j = Parameter(torch.Tensor(1, heads, self.embed_dim))
 
         if bias and concat:
             self.bias = Parameter(torch.Tensor(heads * out_channels))
@@ -115,9 +123,9 @@ class GraphLayer(MessagePassing):
             f"Shape mismatch after fix: {key_i.shape[-1]} vs {cat_att_i.shape[-1]}"
 
         if key_i.shape[-1] != cat_att_i.shape[-1]:
-            # 强制调整大小，使它们匹配
+            # 调整大小，使它们匹配
             # 可以选择做扩展或者调整尺寸
-            cat_att_i = cat_att_i.expand(-1, key_i.shape[-1])
+            cat_att_i = cat_att_i.expand(-1, -1, key_i.shape[-1])
 
 
         alpha = (key_i * cat_att_i).sum(-1) + (key_j * cat_att_j).sum(-1)

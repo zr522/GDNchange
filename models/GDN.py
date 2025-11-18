@@ -104,9 +104,13 @@ class GNNLayer(nn.Module):
 
 class GDN(nn.Module):
     # def __init__(self, edge_index_sets, node_num, dim=64, out_layer_inter_dim=256, input_dim=10, out_layer_num=1, topk=20):
-    def __init__(self, edge_index_sets, node_num, dim=64, out_layer_inter_dim=256, input_dim=10, out_layer_num=1, topk=20,
+    def __init__(self, edge_index_sets, node_num, dim=64, out_layer_inter_dim=256, input_dim=10, out_layer_num=1, topk=20,MSConv=None,
                                    use_nas: bool = False, search_space: dict = None):
         super(GDN, self).__init__()
+
+        self.use_nas = use_nas  # 添加这一行
+
+        self.MSConv = MSConv
 
         self.edge_index_sets = edge_index_sets
 
@@ -162,26 +166,59 @@ class GDN(nn.Module):
 
     def forward(self, data, org_edge_index):
         x = data.clone().detach()
-        edge_index_sets = self.edge_index_sets
         device = data.device
+        # 引入时序卷积
+        if self.MSConv is not None:
+            x = self.MSConv(x)
 
         batch_num, node_num, all_feature = x.shape
         x = x.view(-1, all_feature).contiguous()
 
-        # === 调试输出 ===
-        print(f"org_edge_index.shape: {org_edge_index.shape}")
-        if org_edge_index.dim() == 3:
-            org_edge_index = org_edge_index.permute(1, 0, 2).reshape(2, -1).contiguous()
+        edge_index_sets = self.edge_index_sets
 
-        batch_edge_index = get_batch_edge_index(org_edge_index, batch_num, node_num).to(device).long()
-        print(f"batch_edge_index shape: {batch_edge_index.shape}")
+        # print(f"batch_edge_index shape: {batch_edge_index.shape}")
 
         # =====================================================
         # Case 1: 使用 NAS 搜索模型
         # =====================================================
-        if self.searchable_gnn is not None:
-            gcn_out = self.searchable_gnn(x, batch_edge_index)
-            x = gcn_out.view(batch_num, node_num, -1)
+
+        if self.searchable_gnn is not None and self.use_nas:
+            # ---- 1) 基于节点 embedding 构建 Top-K 图 ----
+            node_ids = torch.arange(node_num, device=device)   # [N]
+            base_embeddings = self.embedding(node_ids)         # [N, embed_dim]
+
+            # 用 detach 的 embedding 计算相似度，避免梯度回传到 embedding
+            weights = base_embeddings.detach()                 # [N, embed_dim]
+            cos_ji_mat = weights @ weights.T                   # [N, N]
+            norm = weights.norm(dim=-1, keepdim=True)          # [N, 1]
+            cos_ji_mat = cos_ji_mat / (norm @ norm.T + 1e-8)   # [N, N]
+
+            topk_num = self.topk
+            topk_indices_ji = torch.topk(cos_ji_mat, topk_num, dim=-1)[1]  # [N, K]
+            self.learned_graph = topk_indices_ji                            # 保留以便可视化
+
+            # i 为被指向节点，j 为指向它的 Top-K 邻居
+            gated_i = node_ids.unsqueeze(1).repeat(1, topk_num).flatten().unsqueeze(0)  # [1, N*K]
+            gated_j = topk_indices_ji.flatten().unsqueeze(0)                            # [1, N*K]
+            gated_edge_index = torch.cat((gated_j, gated_i), dim=0)                     # [2, N*K]
+
+            # 扩展到 batch：第 b 个样本整体平移 b*node_num
+            batch_gated_edge_index = get_batch_edge_index(
+                gated_edge_index, batch_num, node_num
+            ).to(device).long()                                                         # [2, B*N*K]
+
+            # ---- 2) 准备给 GraphLayer 用的 embedding（[B*N, embed_dim]） ----
+            all_embeddings = base_embeddings.repeat(batch_num, 1)   # [B*N, embed_dim]
+
+            # ---- 3) 交给 SearchableGNNLayer ----
+            gcn_out = self.searchable_gnn(
+                x,                          # [B*N, F]
+                batch_gated_edge_index,     # 稀疏 Top-K 图
+                embedding=all_embeddings,   # GraphLayer 使用
+                node_num=batch_num * node_num
+            )
+
+            x = gcn_out.view(batch_num, node_num, -1)   # [B, N, C']
 
         # =====================================================
         # Case 2: 使用原始 GDN 模式（非 NAS）
@@ -235,29 +272,19 @@ class GDN(nn.Module):
 
                 gcn_outs.append(gcn_out)
 
-        # 将多个 GNNLayer 的输出特征在特征维度上进行拼接 dim=1 表示在第1维度（特征维度）上拼接
-        x = torch.cat(gcn_outs, dim=1)
-        x = x.view(batch_num, node_num, -1)
+            x = torch.cat(gcn_outs, dim=1)
+            x = x.view(batch_num, node_num, -1)
 
+    # =====================================================
+        # Case 1 & Case 2 通用的输出层逻辑
+        # =====================================================
+        x = torch.mul(x, self.embedding(torch.arange(0, node_num).to(device)))
+        x = x.permute(0, 2, 1)
+        x = F.relu(self.bn_outlayer_in(x))
+        x = x.permute(0, 2, 1)
 
-        indexes = torch.arange(0,node_num).to(device)
-        # torch.mul 执行逐元素相乘，实现特征调制 即公式9
-        # PyTorch 会自动将 [27, 64] 的嵌入向量扩展到 [128, 27, 64]
-        out = torch.mul(x, self.embedding(indexes))
-
-
-        # out.permute(0,2,1) 将张量维度从 [batch_num, node_num, feature_dim]
-        # 调整为 [batch_num, feature_dim, node_num]
-        out = out.permute(0,2,1)
-        # 应用ReLU激活函数和批归一化
-        out = F.relu(self.bn_outlayer_in(out))
-        # 恢复维度
-        out = out.permute(0,2,1)
-        # dropout防止过拟合
-        out = self.dp(out)
-        # 通过输出层处理
-        out = self.out_layer(out)
-        # 输出重塑为二维张量，准备作为最终预测结果
+        x = self.dp(x)
+        out = self.out_layer(x)
         out = out.view(-1, node_num)
         return out
 

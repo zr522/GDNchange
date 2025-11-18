@@ -7,7 +7,8 @@ from torch.utils.data import DataLoader, random_split, Subset
 
 from sklearn.preprocessing import MinMaxScaler
 
-from models.search import random_search
+from models.MSTCN import TCN1d
+from models.search import  search_with_genetic_algorithm
 from util.env import get_device, set_device
 from util.preprocess import build_loc_net, construct_data
 from util.net_struct import get_feature_map, get_fc_graph_struc
@@ -33,13 +34,24 @@ import matplotlib.pyplot as plt
 
 import json
 import random
+import logging
+log_dir = './log'
+os.makedirs(log_dir, exist_ok=True)
+
 
 class Main():
     def __init__(self, train_config, env_config, debug=False):
 
+        logging.basicConfig(
+        filename=os.path.join(log_dir, 'training_log.txt'),  # 日志文件名
+        level=logging.INFO,  # 设置日志级别
+        format='%(asctime)s - %(levelname)s - %(message)s',  # 日志格式
+        )
+
         self.train_config = train_config
         self.env_config = env_config
         self.datestr = None
+        self.MSConv = None
 
         dataset = self.env_config['dataset'] 
         train_orig = pd.read_csv(f'./data/{dataset}/train.csv', sep=',', index_col=0)
@@ -90,6 +102,14 @@ class Main():
         edge_index_sets = []
         edge_index_sets.append(fc_edge_index)
 
+        # 引入时序卷积
+        if train_config['use_tcn']:
+            self.MSConv = TCN1d(
+                feature_num=len(feature_map),
+                # kernel_size=5,
+                # dilation=2
+            )
+
         self.model = GDN(edge_index_sets=self.edge_index_sets,
                 node_num=len(feature_map),
                 dim=train_config['dim'], 
@@ -97,48 +117,63 @@ class Main():
                 out_layer_num=train_config['out_layer_num'],
                 out_layer_inter_dim=train_config['out_layer_inter_dim'],
                 topk=train_config['topk'],
-                use_nas=True, # <- 开启NAS
+                MSConv=self.MSConv,
+                use_nas=train_config['use_nas'], # <- 开启NAS
                 search_space={  # 设置搜索空间
                     "depth": [1, 2, 3, 4, 5],
                     "op_candidates": ["GraphLayer", "GCN", "GAT", "SAGE", "GraphSAGE"],
                     "hidden_candidates": [32, 64, 128],
-                    "skip_candidates": ["none", "residual", "dense"],
+                    "skip_candidates": ["none", "residual"],
                 }
             ).to(self.device)
 
 
 
     def run(self):
-        # 先做随机搜索（例如 20个候选，每个训练10个epoch）
-        def make_model():
-            # 构建新的 GDN（保持与上面一致），用于评测单个候选
-            return GDN(
-                self.edge_index_sets, len(self.feature_map),
-                dim=self.train_config['dim'],
-                input_dim=self.train_config['slide_win'],
-                out_layer_num=self.train_config['out_layer_num'],
-                out_layer_inter_dim=self.train_config['out_layer_inter_dim'],
-                topk=self.train_config['topk'],
-                use_nas=True
-            ).to(self.device)
+        # 只有在启用NAS时才进行架构搜索
+        if self.train_config.get('use_nas', False):
+            # 先做随机搜索（例如 20个候选，每个训练10个epoch）
+            def make_model():
+                # 构建新的 GDN（保持与上面一致），用于评测单个候选
+                return GDN(
+                    self.edge_index_sets, len(self.feature_map),
+                    dim=self.train_config['dim'],
+                    input_dim=self.train_config['slide_win'],
+                    out_layer_num=self.train_config['out_layer_num'],
+                    out_layer_inter_dim=self.train_config['out_layer_inter_dim'],
+                    topk=self.train_config['topk'],
+                    use_nas=self.train_config['use_nas'],  # 启用NAS
+                    search_space={  # 设置搜索空间
+                        "depth": [1, 2, 3, 4 , 5],
+                        "op_candidates": ["GraphLayer", "GCN", "GAT", "SAGE", "GraphSAGE"],
+                        "hidden_candidates": [32, 64, 128],
+                        "skip_candidates": ["none", "residual"],
+                    }
+                ).to(self.device)
 
-        best_arch = random_search(
-            make_model_fn=make_model,
-            train_dataloader=self.train_dataloader,
-            val_dataloader=self.val_dataloader,
-            base_train_config=self.train_config,
-            num_samples=10,
-            short_epochs=10,
-            device=str(self.device)
-        )
-        print(">>> Best arch from NAS:", best_arch)
+            # best_arch = random_search(
+            #     make_model_fn=make_model,
+            #     train_dataloader=self.train_dataloader,
+            #     val_dataloader=self.val_dataloader,
+            #     base_train_config=self.train_config,
+            #     num_samples=20,
+            #     short_epochs=15,
+            #     device=str(self.device)
+            # )
+            best_arch = search_with_genetic_algorithm(make_model_fn=make_model, train_dataloader=self.train_dataloader,
+                                                      val_dataloader=self.val_dataloader,
+                                                      base_train_config=self.train_config, num_generations=2,
+                                                      population_size=4, mutation_rate=0.3, device="cuda",
+                                                      tmp_save_dir="./pretrained/nas_tmp/")
+            print(">>> Best arch from NAS:", best_arch)
 
-        if self.model.searchable_gnn is not None:
-            # 如果使用 NAS，调用 searchable_gnn 进行架构构建
-            self.model.searchable_gnn.build_arch(best_arch)
+            # 只有当best_arch不为None且模型支持NAS时才调用build_arch
+            if best_arch is not None and self.model.searchable_gnn is not None:
+                # 如果使用 NAS，调用 searchable_gnn 进行架构构建
+                self.model.searchable_gnn.build_arch(best_arch)
         else:
-        # 如果不是 NAS 模式，继续使用原始 gnn_layers
-            self.model.gnn_layers[0].build_arch(best_arch)
+            print("NAS is disabled. Skipping architecture search.")
+            best_arch = None
 
         if len(self.env_config['load_model_path']) > 0:
             model_save_path = self.env_config['load_model_path']
@@ -202,6 +237,7 @@ class Main():
 
 
         print('=========================** Result **============================\n')
+        logging.info('=========================** Result **============================')
 
         info = None
         if self.env_config['report'] == 'best':
@@ -212,6 +248,10 @@ class Main():
         print(f'F1 score: {info[0]}')
         print(f'precision: {info[1]}')
         print(f'recall: {info[2]}\n')
+
+        logging.info(f'F1 score: {info[0]}')
+        logging.info(f'precision: {info[1]}')
+        logging.info(f'recall: {info[2]}')
 
 
     def get_save_path(self, feature_name=''):
@@ -238,7 +278,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-batch', help='batch size', type = int, default=128)
+    parser.add_argument('-batch', help='batch size', type = int, default=256)
     parser.add_argument('-epoch', help='train epoch', type = int, default=100)
     parser.add_argument('-slide_win', help='slide_win', type = int, default=15)
     parser.add_argument('-dim', help='dimension', type = int, default=64)
@@ -281,6 +321,8 @@ if __name__ == "__main__":
         'decay': args.decay,
         'val_ratio': args.val_ratio,
         'topk': args.topk,
+        'use_tcn': True,
+        'use_nas': False
     }
 
     env_config={

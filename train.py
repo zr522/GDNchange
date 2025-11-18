@@ -1,4 +1,5 @@
 import logging
+import os
 
 import numpy as np
 import torch
@@ -20,11 +21,15 @@ from torch.utils.data import DataLoader, random_split, Subset
 from scipy.stats import iqr
 
 
+log_dir = './log'
+os.makedirs(log_dir, exist_ok=True)
+
 logging.basicConfig(
-    filename='./log/training_log.txt',  # 日志文件名
+    filename=os.path.join(log_dir, 'training_log.txt'),  # 日志文件名
     level=logging.INFO,  # 设置日志级别
     format='%(asctime)s - %(levelname)s - %(message)s',  # 日志格式
 )
+
 # 加权MSELoss
 class WeightedMSELoss(nn.Module):
     def __init__(self, weights):
@@ -118,9 +123,12 @@ def train(model = None, save_path = '', config={},  train_dataloader=None, val_d
 
         # each epoch
         print('epoch ({} / {}) (Loss:{:.8f}, ACU_loss:{:.8f})'.format(
-                        i_epoch, epoch, 
+                        i_epoch, epoch,
                         acu_loss/len(dataloader), acu_loss), flush=True
             )
+        logging.info('epoch ({} / {}) (Loss:{:.8f}, ACU_loss:{:.8f})'.format(
+                        i_epoch, epoch,
+                        acu_loss/len(dataloader), acu_loss))
 
         # use val dataset to judge
         if val_dataloader is not None:
