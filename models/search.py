@@ -279,7 +279,7 @@ def genetic_algorithm(
         val_dataloader,
         base_train_config: dict,
         num_generations: int = 2,
-        population_size: int = 4,
+        population_size: int = 2,
         mutation_rate: float = 0.3,
         device: str = "cuda",
         tmp_save_dir: str = "./pretrained/nas_tmp/"
@@ -330,17 +330,22 @@ def genetic_algorithm(
             logging.info(f"  -> ops: {arch['ops']}")
             logging.info(f"  -> hidden_dims: {arch['hidden_dims']}")
 
+            # 统一取可搜索的 GNN 层：支持 searchable_gnn_layers 或 searchable_gnn
+            nas_layers = None
             model = make_model_fn().to(device)
-            if not getattr(model, "searchable_gnn", None):
-                print("  [WARN] model.searchable_gnn is None, skipping...")
-                logging.info("  [WARN] model.searchable_gnn is None, skipping...")
-                continue
+            if getattr(model, "searchable_gnn_layers", None) is not None:
+                nas_layers = list(model.searchable_gnn_layers)
+            elif getattr(model, "searchable_gnn", None) is not None:
+                nas_layers = [model.searchable_gnn]
 
-            # 这里如果还越界，那就是 arch 真有问题，会被上面的 normalize 抓住
-            model.searchable_gnn.build_arch(arch)
+
+            # 对所有 NAS 层应用同一个 arch（多分支共享架构）
+            for l_id, layer in enumerate(nas_layers):
+                print(f"    -> build_arch for NAS layer {l_id}")
+                layer.build_arch(arch)
 
             cfg = copy.deepcopy(base_train_config)
-            cfg["epoch"] = min(10, cfg.get("epoch", 10))  # 短训
+            cfg["epoch"] = min(35, cfg.get("epoch", 35))  # 短训
             tmp_path = os.path.join(tmp_save_dir, f"nas_gen{generation}_idx{idx}.pt")
 
             train(
@@ -441,6 +446,34 @@ def genetic_algorithm(
 
 
 
+def compute_search_f1(
+        model,
+        val_dataloader,
+        search_test_dataloader,
+        report: str = "val",   # "best" or "val"，跟 main.env_config['report'] 对齐
+        topk: int = 1,
+):
+    # 1) 在 search-test 上跑一遍预测
+    _, search_test_result = test(model, search_test_dataloader)
+    # 2) 在 val_dataloader 上也跑一遍，用来构造 normal_scores
+    _, val_result = test(model, val_dataloader)
+
+    # 3) 计算误差得分矩阵 & normal_scores
+    test_scores, normal_scores = get_full_err_scores(search_test_result, val_result)
+
+    # 4) 拿标签
+    np_search_test = np.array(search_test_result)
+    test_labels = np_search_test[2, :, 0].tolist()
+
+    # 5) 用和 main.get_score 一致的逻辑算 F1
+    if report == "best":
+        f1, pre, rec, auc, th = get_best_performance_data(test_scores, test_labels, topk=topk)
+    else:  # "val"
+        f1, pre, rec, auc, th = get_val_performance_data(test_scores, normal_scores, test_labels, topk=topk)
+
+    return f1, pre, rec
+
+
 # 使用遗传算法进行架构搜索
 def search_with_genetic_algorithm(
         make_model_fn,
@@ -448,7 +481,7 @@ def search_with_genetic_algorithm(
         val_dataloader,
         base_train_config: dict,
         num_generations: int = 2,
-        population_size: int = 4,
+        population_size: int = 2,
         mutation_rate: float = 0.3,
         device: str = "cuda",
         tmp_save_dir: str = "./pretrained/nas_tmp/"
@@ -459,4 +492,6 @@ def search_with_genetic_algorithm(
     return genetic_algorithm(make_model_fn, train_dataloader, val_dataloader, base_train_config,
                              num_generations=num_generations, population_size=population_size,
                              mutation_rate=mutation_rate, device=device, tmp_save_dir=tmp_save_dir)
+
+
 

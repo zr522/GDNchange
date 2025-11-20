@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="image" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="image" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.12.3 (sftp://root@connect.bjb2.seetacloud.com:12604/root/.virtualenvs/GDN-main/bin/python)" project-jdk-type="Python SDK" />
 </project>

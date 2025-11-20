@@ -35,11 +35,17 @@ class SearchableGNNLayer(nn.Module):
         # 搜索空间（可按需扩展/裁剪）
         if search_space is None:
             search_space = {
-                "depth": [1, 2, 3],  # 增加网络深度
+                "depth": [1,2, 3,4,5],  # 增加网络深度
                 "op_candidates": ["GraphLayer", "GCN", "GAT", "SAGE", "GraphSAGE"],  # 增加GNN操作候选项
-                "hidden_candidates": [32, 64, 128],  # 增加隐藏层维度候选值
+                "hidden_candidates": [32, 64, 128, 256],  # 增加隐藏层维度候选值
                 "skip_candidates": ["none", "residual"],  # 增加更多跳跃连接候选项
             }
+            # search_space = {
+            #     "depth": [1],
+            #     "op_candidates": ["GraphLayer"],       # 只允许 GraphLayer
+            #     "hidden_candidates": [self.dim],      # 只允许原始 dim
+            #     "skip_candidates": ["none"]           # 不加残差
+            # }
         self.search_space = search_space
 
         # 运行时构建的架构

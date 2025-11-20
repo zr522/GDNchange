@@ -92,11 +92,35 @@ class Main():
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
 
+                # 切一部分出来做 NAS 搜索用，比如 20%
+        search_ratio = 0.2
+        search_len = int(len(self.test_dataset) * search_ratio)
+        indices = torch.randperm(len(self.test_dataset))
+        search_indices = indices[:search_len]
+        final_indices  = indices[search_len:]
+
+        self.search_test_dataset = Subset(self.test_dataset, search_indices)
+        self.final_test_dataset  = Subset(self.test_dataset, final_indices)
+
 
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
-        self.test_dataloader = DataLoader(test_dataset, batch_size=train_config['batch'],
-                            shuffle=False, num_workers=0)
+        # self.test_dataloader = DataLoader(test_dataset, batch_size=train_config['batch'],
+        #                     shuffle=False, num_workers=0)
+
+        self.search_test_dataloader = DataLoader(
+            self.search_test_dataset,
+            batch_size=train_config['batch'],
+            shuffle=False,
+            num_workers=0
+        )
+
+        self.test_dataloader = DataLoader(       # 注意：现在的 test_dataloader 只用 final_test_dataset
+            self.final_test_dataset,
+            batch_size=train_config['batch'],
+            shuffle=False,
+            num_workers=0
+        )
 
 
         edge_index_sets = []
@@ -122,16 +146,22 @@ class Main():
                 search_space={  # 设置搜索空间
                     "depth": [1, 2, 3, 4, 5],
                     "op_candidates": ["GraphLayer", "GCN", "GAT", "SAGE", "GraphSAGE"],
-                    "hidden_candidates": [32, 64, 128],
+                    "hidden_candidates": [32, 64, 128, 256],
                     "skip_candidates": ["none", "residual"],
                 }
+                # search_space = {
+                #     "depth": [1],
+                #     "op_candidates": ["GraphLayer"],       # 只允许 GraphLayer
+                #     "hidden_candidates": [64],      # 只允许原始 dim
+                #     "skip_candidates": ["none"]           # 不加残差
+                # }
             ).to(self.device)
 
 
 
     def run(self):
         # 只有在启用NAS时才进行架构搜索
-        if self.train_config.get('use_nas', False):
+        if self.train_config.get('use_nas', True):
             # 先做随机搜索（例如 20个候选，每个训练10个epoch）
             def make_model():
                 # 构建新的 GDN（保持与上面一致），用于评测单个候选
@@ -144,11 +174,17 @@ class Main():
                     topk=self.train_config['topk'],
                     use_nas=self.train_config['use_nas'],  # 启用NAS
                     search_space={  # 设置搜索空间
-                        "depth": [1, 2, 3, 4 , 5],
+                        "depth": [1,2, 3, 4 , 5],
                         "op_candidates": ["GraphLayer", "GCN", "GAT", "SAGE", "GraphSAGE"],
-                        "hidden_candidates": [32, 64, 128],
+                        "hidden_candidates": [32, 64, 128, 256],
                         "skip_candidates": ["none", "residual"],
                     }
+                    # search_space = {
+                    #     "depth": [1],
+                    #     "op_candidates": ["GraphLayer"],       # 只允许 GraphLayer
+                    #     "hidden_candidates": [64],      # 只允许原始 dim
+                    #     "skip_candidates": ["none"]           # 不加残差
+                    # }
                 ).to(self.device)
 
             # best_arch = random_search(
@@ -163,14 +199,28 @@ class Main():
             best_arch = search_with_genetic_algorithm(make_model_fn=make_model, train_dataloader=self.train_dataloader,
                                                       val_dataloader=self.val_dataloader,
                                                       base_train_config=self.train_config, num_generations=2,
-                                                      population_size=4, mutation_rate=0.3, device="cuda",
+                                                      population_size=2, mutation_rate=0.3, device="cuda",
                                                       tmp_save_dir="./pretrained/nas_tmp/")
+
             print(">>> Best arch from NAS:", best_arch)
 
+
             # 只有当best_arch不为None且模型支持NAS时才调用build_arch
-            if best_arch is not None and self.model.searchable_gnn is not None:
-                # 如果使用 NAS，调用 searchable_gnn 进行架构构建
-                self.model.searchable_gnn.build_arch(best_arch)
+            if best_arch is not None:
+                # 优先使用多分支 NAS（searchable_gnn_layers）
+                if getattr(self.model, "searchable_gnn_layers", None) is not None:
+                    print("Apply best_arch to all NAS branches (searchable_gnn_layers)")
+                    for i, layer in enumerate(self.model.searchable_gnn_layers):
+                        print(f"  -> build_arch for NAS layer {i}")
+                        layer.build_arch(best_arch)
+
+                # 兼容单分支 NAS（老版本）
+                elif getattr(self.model, "searchable_gnn", None) is not None:
+                    print("Apply best_arch to single NAS layer (searchable_gnn)")
+                    self.model.searchable_gnn.build_arch(best_arch)
+
+                else:
+                    print("WARNING: Model has no searchable_gnn_layers/searchable_gnn, skip build_arch")
         else:
             print("NAS is disabled. Skipping architecture search.")
             best_arch = None
@@ -185,7 +235,7 @@ class Main():
                 train_dataloader=self.train_dataloader,
                 val_dataloader=self.val_dataloader, 
                 feature_map=self.feature_map,
-                test_dataloader=self.test_dataloader,
+                test_dataloader=self.search_test_dataloader,
                 test_dataset=self.test_dataset,
                 train_dataset=self.train_dataset,
                 dataset_name=self.env_config['dataset']
@@ -278,7 +328,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-batch', help='batch size', type = int, default=256)
+    parser.add_argument('-batch', help='batch size', type = int, default=128)
     parser.add_argument('-epoch', help='train epoch', type = int, default=100)
     parser.add_argument('-slide_win', help='slide_win', type = int, default=15)
     parser.add_argument('-dim', help='dimension', type = int, default=64)
@@ -322,7 +372,7 @@ if __name__ == "__main__":
         'val_ratio': args.val_ratio,
         'topk': args.topk,
         'use_tcn': True,
-        'use_nas': False
+        'use_nas': True
     }
 
     env_config={
