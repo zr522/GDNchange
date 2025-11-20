@@ -70,7 +70,7 @@ def train(model = None, save_path = '', config={},  train_dataloader=None, val_d
     model.to(device)  # 确保模型在正确的设备上
 
     now = time.time()
-    
+
     train_loss_list = []
     cmp_loss_list = []
 
@@ -110,25 +110,25 @@ def train(model = None, save_path = '', config={},  train_dataloader=None, val_d
             optimizer.zero_grad()
             out = model(x, edge_index).float().to(device)
             loss = loss_func(out, labels)
-            
+
             loss.backward()
             optimizer.step()
 
-            
+
             train_loss_list.append(loss.item())
             acu_loss += loss.item()
-                
+
             i += 1
 
 
         # each epoch
         print('epoch ({} / {}) (Loss:{:.8f}, ACU_loss:{:.8f})'.format(
-                        i_epoch, epoch,
-                        acu_loss/len(dataloader), acu_loss), flush=True
-            )
+            i_epoch, epoch,
+            acu_loss/len(dataloader), acu_loss), flush=True
+        )
         logging.info('epoch ({} / {}) (Loss:{:.8f}, ACU_loss:{:.8f})'.format(
-                        i_epoch, epoch,
-                        acu_loss/len(dataloader), acu_loss))
+            i_epoch, epoch,
+            acu_loss/len(dataloader), acu_loss))
 
         # use val dataset to judge
         if val_dataloader is not None:

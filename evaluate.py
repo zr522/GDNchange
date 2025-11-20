@@ -52,9 +52,9 @@ def get_err_scores(test_res, val_res):
     n_err_mid, n_err_iqr = get_err_median_and_iqr(test_predict, test_gt)
 
     test_delta = np.abs(np.subtract(
-                        np.array(test_predict).astype(np.float64), 
-                        np.array(test_gt).astype(np.float64)
-                    ))
+        np.array(test_predict).astype(np.float64),
+        np.array(test_gt).astype(np.float64)
+    ))
     epsilon=1e-2
 
     err_scores = (test_delta - n_err_mid) / ( np.abs(n_err_iqr) +epsilon)
@@ -64,7 +64,7 @@ def get_err_scores(test_res, val_res):
     for i in range(before_num, len(err_scores)):
         smoothed_err_scores[i] = np.mean(err_scores[i-before_num:i+1])
 
-    
+
     return smoothed_err_scores
 
 
@@ -79,7 +79,7 @@ def get_f1_scores(total_err_scores, gt_labels, topk=1):
 
     # topk_indices = np.argpartition(total_err_scores, range(total_features-1-topk, total_features-1), axis=0)[-topk-1:-1]
     topk_indices = np.argpartition(total_err_scores, range(total_features-topk-1, total_features), axis=0)[-topk:]
-    
+
     topk_indices = np.transpose(topk_indices)
 
     total_topk_err_scores = []
@@ -87,7 +87,7 @@ def get_f1_scores(total_err_scores, gt_labels, topk=1):
     # topk_anomaly_sensors = []
 
     for i, indexs in enumerate(topk_indices):
-       
+
         sum_score = sum( score for k, score in enumerate(sorted([total_err_scores[index, i] for j, index in enumerate(indexs)])) )
 
         total_topk_err_scores.append(sum_score)

@@ -446,34 +446,6 @@ def genetic_algorithm(
 
 
 
-def compute_search_f1(
-        model,
-        val_dataloader,
-        search_test_dataloader,
-        report: str = "val",   # "best" or "val"，跟 main.env_config['report'] 对齐
-        topk: int = 1,
-):
-    # 1) 在 search-test 上跑一遍预测
-    _, search_test_result = test(model, search_test_dataloader)
-    # 2) 在 val_dataloader 上也跑一遍，用来构造 normal_scores
-    _, val_result = test(model, val_dataloader)
-
-    # 3) 计算误差得分矩阵 & normal_scores
-    test_scores, normal_scores = get_full_err_scores(search_test_result, val_result)
-
-    # 4) 拿标签
-    np_search_test = np.array(search_test_result)
-    test_labels = np_search_test[2, :, 0].tolist()
-
-    # 5) 用和 main.get_score 一致的逻辑算 F1
-    if report == "best":
-        f1, pre, rec, auc, th = get_best_performance_data(test_scores, test_labels, topk=topk)
-    else:  # "val"
-        f1, pre, rec, auc, th = get_val_performance_data(test_scores, normal_scores, test_labels, topk=topk)
-
-    return f1, pre, rec
-
-
 # 使用遗传算法进行架构搜索
 def search_with_genetic_algorithm(
         make_model_fn,
@@ -492,6 +464,4 @@ def search_with_genetic_algorithm(
     return genetic_algorithm(make_model_fn, train_dataloader, val_dataloader, base_train_config,
                              num_generations=num_generations, population_size=population_size,
                              mutation_rate=mutation_rate, device=device, tmp_save_dir=tmp_save_dir)
-
-
 

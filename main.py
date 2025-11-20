@@ -92,35 +92,11 @@ class Main():
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
 
-                # 切一部分出来做 NAS 搜索用，比如 20%
-        search_ratio = 0.2
-        search_len = int(len(self.test_dataset) * search_ratio)
-        indices = torch.randperm(len(self.test_dataset))
-        search_indices = indices[:search_len]
-        final_indices  = indices[search_len:]
-
-        self.search_test_dataset = Subset(self.test_dataset, search_indices)
-        self.final_test_dataset  = Subset(self.test_dataset, final_indices)
-
 
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
-        # self.test_dataloader = DataLoader(test_dataset, batch_size=train_config['batch'],
-        #                     shuffle=False, num_workers=0)
-
-        self.search_test_dataloader = DataLoader(
-            self.search_test_dataset,
-            batch_size=train_config['batch'],
-            shuffle=False,
-            num_workers=0
-        )
-
-        self.test_dataloader = DataLoader(       # 注意：现在的 test_dataloader 只用 final_test_dataset
-            self.final_test_dataset,
-            batch_size=train_config['batch'],
-            shuffle=False,
-            num_workers=0
-        )
+        self.test_dataloader = DataLoader(test_dataset, batch_size=train_config['batch'],
+                            shuffle=False, num_workers=0)
 
 
         edge_index_sets = []
@@ -161,7 +137,7 @@ class Main():
 
     def run(self):
         # 只有在启用NAS时才进行架构搜索
-        if self.train_config.get('use_nas', True):
+        if self.train_config.get('use_nas', False):
             # 先做随机搜索（例如 20个候选，每个训练10个epoch）
             def make_model():
                 # 构建新的 GDN（保持与上面一致），用于评测单个候选
@@ -196,12 +172,15 @@ class Main():
             #     short_epochs=15,
             #     device=str(self.device)
             # )
-            best_arch = search_with_genetic_algorithm(make_model_fn=make_model, train_dataloader=self.train_dataloader,
-                                                      val_dataloader=self.val_dataloader,
-                                                      base_train_config=self.train_config, num_generations=2,
-                                                      population_size=2, mutation_rate=0.3, device="cuda",
-                                                      tmp_save_dir="./pretrained/nas_tmp/")
-
+            # best_arch = search_with_genetic_algorithm(make_model_fn=make_model, train_dataloader=self.train_dataloader,
+            #                                           val_dataloader=self.val_dataloader,
+            #                                           base_train_config=self.train_config, num_generations=2,
+            #                                           population_size=20, mutation_rate=0.3, device="cuda",
+            #                                           tmp_save_dir="./pretrained/nas_tmp/")
+            best_arch = {'depth': 4,
+                    'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'],
+                    'hidden_dims': [256, 128, 256, 128],
+                    'skip': 'none'}
             print(">>> Best arch from NAS:", best_arch)
 
 
@@ -235,7 +214,7 @@ class Main():
                 train_dataloader=self.train_dataloader,
                 val_dataloader=self.val_dataloader, 
                 feature_map=self.feature_map,
-                test_dataloader=self.search_test_dataloader,
+                test_dataloader=self.test_dataloader,
                 test_dataset=self.test_dataset,
                 train_dataset=self.train_dataset,
                 dataset_name=self.env_config['dataset']
@@ -372,7 +351,7 @@ if __name__ == "__main__":
         'val_ratio': args.val_ratio,
         'topk': args.topk,
         'use_tcn': True,
-        'use_nas': True
+        'use_nas': False
     }
 
     env_config={
