@@ -25,7 +25,6 @@ def get_attack_interval(attack):
     return res
 
 # calculate F1 scores
-# calculate F1 scores
 def eval_scores(scores, true_scores, th_steps, return_thresold=False):
     padding_list = [0]*(len(true_scores) - len(scores))
     # print(padding_list)
@@ -50,7 +49,6 @@ def eval_scores(scores, true_scores, th_steps, return_thresold=False):
     if return_thresold:
         return fmeas, thresholds
     return fmeas
-
 
 def eval_mseloss(predicted, ground_truth):
 

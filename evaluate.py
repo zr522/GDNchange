@@ -115,10 +115,9 @@ def get_val_performance_data(total_err_scores, normal_scores, gt_labels, topk=1)
         pred_labels[i] = int(pred_labels[i])
         gt_labels[i] = int(gt_labels[i])
 
-    pre = precision_score(gt_labels, pred_labels)
-    rec = recall_score(gt_labels, pred_labels)
-
-    f1 = f1_score(gt_labels, pred_labels)
+    pre = precision_score(gt_labels, pred_labels, zero_division=0)
+    rec = recall_score(gt_labels, pred_labels, zero_division=0)
+    f1 = f1_score(gt_labels, pred_labels, zero_division=0)
 
 
     auc_score = roc_auc_score(gt_labels, total_topk_err_scores)
@@ -150,10 +149,10 @@ def get_best_performance_data(total_err_scores, gt_labels, topk=1):
         pred_labels[i] = int(pred_labels[i])
         gt_labels[i] = int(gt_labels[i])
 
-    pre = precision_score(gt_labels, pred_labels)
-    rec = recall_score(gt_labels, pred_labels)
+    pre = precision_score(gt_labels, pred_labels, zero_division=0)
+    rec = recall_score(gt_labels, pred_labels, zero_division=0)
+
 
     auc_score = roc_auc_score(gt_labels, total_topk_err_scores)
-
     return max(final_topk_fmeas), pre, rec, auc_score, thresold
 

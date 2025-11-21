@@ -106,10 +106,32 @@ logging.basicConfig(
     ]
 )
 
+
+# ------------------ 新增：复杂度惩罚辅助函数 ------------------ #
+def compute_complexity_penalty(arch, max_depth, max_hidden):
+    """
+    简单版本的“复杂度”：depth 越大、hidden 越大惩罚越多。
+    返回：depth_pen, hidden_pen, total_pen
+    """
+    depth = max(1, int(arch["depth"]))
+    hids = arch["hidden_dims"]
+    if len(hids) == 0:
+        mean_hidden = max_hidden
+    else:
+        mean_hidden = sum(hids) / float(len(hids))
+
+    # 归一化到 [0, 1] 左右
+    depth_pen = depth / float(max_depth)
+    hidden_pen = mean_hidden / float(max_hidden)
+    total_pen = depth_pen + hidden_pen
+    return depth_pen, hidden_pen, total_pen
+
+
 # ------------ helpers: 采样/归一化/交叉/变异 ------------
 def _nearest_allowed_depth(d, allowed_depths):
     # 把任意整数 depth 对齐到允许集合里最接近的一个
     return min(allowed_depths, key=lambda x: abs(x - d))
+
 
 def normalize_arch(arch, search_space):
     """
@@ -165,6 +187,7 @@ def normalize_arch(arch, search_space):
     print(f"    [normalize_arch] depth={d}, len(ops)={len(ops)}, len(hiddens)={len(hids)}, skip={skip}")
     logging.info(f"    [normalize_arch] depth={d}, len(ops)={len(ops)}, len(hiddens)={len(hids)}, skip={skip}")
     return fixed
+
 
 def crossover(parent1, parent2, search_space):
     """
@@ -265,12 +288,14 @@ def sample_arch(search_space):
         "skip": skip
     }
 
+
 # 重置随机种子
 def reset_seed(seed=0):
     random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
+
 
 # 遗传算法搜索策略
 def genetic_algorithm(
@@ -305,7 +330,7 @@ def genetic_algorithm(
         print("Population architectures (before eval):")
         logging.info("Population architectures (before eval):")
         for idx, arch in enumerate(population):
-            print(f"  [{idx+1}] depth={arch['depth']} | "
+            print(f"  [{idx + 1}] depth={arch['depth']} | "
                   f"ops={arch['ops']} | "
                   f"hidden={arch['hidden_dims']} | "
                   f"skip={arch['skip']}")
@@ -313,8 +338,8 @@ def genetic_algorithm(
         # 评估种群的适应度（验证集上的表现）
         val_losses = []
         for idx, arch in enumerate(population):
-            print(f"\nEvaluating architecture {idx+1}/{len(population)} ...")
-            logging.info(f"\nEvaluating architecture {idx+1}/{len(population)} ...")
+            print(f"\nEvaluating architecture {idx + 1}/{len(population)} ...")
+            logging.info(f"\nEvaluating architecture {idx + 1}/{len(population)} ...")
             # 防御性再 normalize 一次，确保是合法结构
             arch = normalize_arch(arch, search_space)
 
@@ -338,7 +363,6 @@ def genetic_algorithm(
             elif getattr(model, "searchable_gnn", None) is not None:
                 nas_layers = [model.searchable_gnn]
 
-
             # 对所有 NAS 层应用同一个 arch（多分支共享架构）
             for l_id, layer in enumerate(nas_layers):
                 print(f"    -> build_arch for NAS layer {l_id}")
@@ -358,8 +382,8 @@ def genetic_algorithm(
 
             val_loss, _ = test(model, val_dataloader)
             val_losses.append((arch, val_loss))
-            print(f"  Architecture {idx+1} validation loss: {val_loss:.6f}")
-            logging.info(f"  Architecture {idx+1} validation loss: {val_loss:.6f}")
+            print(f"  Architecture {idx + 1} validation loss: {val_loss:.6f}")
+            logging.info(f"  Architecture {idx + 1} validation loss: {val_loss:.6f}")
 
         # 如果这一代一个都没成功评估，直接 break
         if len(val_losses) == 0:
@@ -414,7 +438,6 @@ def genetic_algorithm(
                 print(f"      L{i}: op={op:<10} hidden={hid}")
                 logging.info(f"      L{i}: op={op:<10} hidden={hid}")
 
-
             child = crossover(p1, p2, search_space)
 
             if random.random() < mutation_rate:
@@ -445,7 +468,6 @@ def genetic_algorithm(
     return best_arch
 
 
-
 # 使用遗传算法进行架构搜索
 def search_with_genetic_algorithm(
         make_model_fn,
@@ -464,4 +486,3 @@ def search_with_genetic_algorithm(
     return genetic_algorithm(make_model_fn, train_dataloader, val_dataloader, base_train_config,
                              num_generations=num_generations, population_size=population_size,
                              mutation_rate=mutation_rate, device=device, tmp_save_dir=tmp_save_dir)
-

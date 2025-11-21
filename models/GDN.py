@@ -155,7 +155,7 @@ class GDN(nn.Module):
               self.gnn_layers = nn.ModuleList([
                   GNNLayer(input_dim, dim, inter_dim=dim+embed_dim, heads=1)
               ])
-              self.searchable_gnn = None  # 没有使用
+              self.searchable_gnn_layers = None  # 没有使用
 
 
         self.node_embedding = None

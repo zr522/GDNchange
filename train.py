@@ -20,7 +20,6 @@ from sklearn.metrics import precision_score, recall_score, roc_auc_score, f1_sco
 from torch.utils.data import DataLoader, random_split, Subset
 from scipy.stats import iqr
 
-
 log_dir = './log'
 os.makedirs(log_dir, exist_ok=True)
 
@@ -29,6 +28,7 @@ logging.basicConfig(
     level=logging.INFO,  # 设置日志级别
     format='%(asctime)s - %(levelname)s - %(message)s',  # 日志格式
 )
+
 
 # 加权MSELoss
 class WeightedMSELoss(nn.Module):
@@ -40,6 +40,7 @@ class WeightedMSELoss(nn.Module):
         loss = (inputs - targets) ** 2
         weighted_loss = loss * self.weights  # 按传感器的权重加权
         return weighted_loss.mean()
+
 
 # 对比损失 (Contrastive Loss)
 class ContrastiveLoss(nn.Module):
@@ -53,15 +54,15 @@ class ContrastiveLoss(nn.Module):
                           (label) * torch.pow(torch.clamp(self.margin - euclidean_distance, min=0.0), 2))
         return loss
 
+
 def loss_func(y_pred, y_true):
     loss = F.mse_loss(y_pred, y_true, reduction='mean')
 
     return loss
 
 
-
-def train(model = None, save_path = '', config={},  train_dataloader=None, val_dataloader=None, feature_map={}, test_dataloader=None, test_dataset=None, dataset_name='swat', train_dataset=None):
-
+def train(model=None, save_path='', config={}, train_dataloader=None, val_dataloader=None, feature_map={},
+          test_dataloader=None, test_dataset=None, dataset_name='swat', train_dataset=None):
     device = get_device()  # 获取当前设备
     seed = config['seed']
 
@@ -78,7 +79,6 @@ def train(model = None, save_path = '', config={},  train_dataloader=None, val_d
 
     # 使用学习率调度器
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5)
-
 
     acu_loss = 0
     min_loss = 1e+8
@@ -114,21 +114,19 @@ def train(model = None, save_path = '', config={},  train_dataloader=None, val_d
             loss.backward()
             optimizer.step()
 
-
             train_loss_list.append(loss.item())
             acu_loss += loss.item()
 
             i += 1
 
-
         # each epoch
         print('epoch ({} / {}) (Loss:{:.8f}, ACU_loss:{:.8f})'.format(
             i_epoch, epoch,
-            acu_loss/len(dataloader), acu_loss), flush=True
+            acu_loss / len(dataloader), acu_loss), flush=True
         )
         logging.info('epoch ({} / {}) (Loss:{:.8f}, ACU_loss:{:.8f})'.format(
             i_epoch, epoch,
-            acu_loss/len(dataloader), acu_loss))
+            acu_loss / len(dataloader), acu_loss))
 
         # use val dataset to judge
         if val_dataloader is not None:
@@ -144,15 +142,12 @@ def train(model = None, save_path = '', config={},  train_dataloader=None, val_d
             else:
                 stop_improve_count += 1
 
-
             if stop_improve_count >= early_stop_win:
                 break
 
         else:
-            if acu_loss < min_loss :
+            if acu_loss < min_loss:
                 torch.save(model.state_dict(), save_path)
                 min_loss = acu_loss
-
-
 
     return train_loss_list
