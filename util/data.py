@@ -1,7 +1,7 @@
 # util functions about data
 
 from scipy.stats import rankdata, iqr, trim_mean
-from sklearn.metrics import f1_score, mean_squared_error
+from sklearn.metrics import f1_score, mean_squared_error, roc_auc_score
 import numpy as np
 from numpy import percentile
 
@@ -50,11 +50,11 @@ def eval_scores(scores, true_scores, th_steps, return_thresold=False):
         return fmeas, thresholds
     return fmeas
 
+
 def eval_mseloss(predicted, ground_truth):
 
     ground_truth_list = np.array(ground_truth)
     predicted_list = np.array(predicted)
-
 
     # mask = (ground_truth_list == 0) | (predicted_list == 0)
 

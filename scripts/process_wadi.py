@@ -42,14 +42,14 @@ def downsample(data, labels, down_len):
 
 def main():
 
-    train = pd.read_csv('./WADI_14days.csv', index_col=0)
-    test = pd.read_csv('./WADI_attackdata_labelled.csv', index_col=0)
+    train = pd.read_csv('./WADI_14days_new.csv', index_col=0,dtype=str)
+    test = pd.read_csv('./WADI_attackdataLABLE.csv', index_col=0,dtype=str)
     
 
     train = train.iloc[:, 2:]
     test = test.iloc[:, 3:]
 
-
+    print(train.shape)
     train = train.fillna(train.mean())
     test = test.fillna(test.mean())
     train = train.fillna(0)
@@ -92,8 +92,8 @@ def main():
 
     train_df = train_df.iloc[2160:]
 
-    train_df.to_csv('./train.csv')
-    test_df.to_csv('./test.csv')
+    train_df.to_csv('./Waditrain.csv')
+    test_df.to_csv('./WADItest.csv')
 
     f = open('./list.txt', 'w')
     for col in train.columns:

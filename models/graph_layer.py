@@ -10,7 +10,8 @@ import math
 
 class GraphLayer(MessagePassing):
     def __init__(self, in_channels, out_channels, heads=1, concat=True,
-                 negative_slope=0.2, dropout=0, bias=True, inter_dim=-1,**kwargs):
+                 negative_slope=0.2, dropout=0, bias=True, inter_dim=-1,
+                 anomaly_mode: str = "none",**kwargs):
         super(GraphLayer, self).__init__(aggr='add',node_dim=0, **kwargs)
 
         self.in_channels = in_channels
@@ -43,6 +44,7 @@ class GraphLayer(MessagePassing):
             self.bias = Parameter(torch.Tensor(out_channels))
         else:
             self.register_parameter('bias', None)
+
 
         self.reset_parameters()
 
@@ -109,30 +111,10 @@ class GraphLayer(MessagePassing):
             cat_att_i = torch.cat((self.att_i, self.att_em_i), dim=-1)
             cat_att_j = torch.cat((self.att_j, self.att_em_j), dim=-1)
 
-            # ----------- CASE 2: embedding 为空 -----------
-        else:
-            key_i = x_i
-            key_j = x_j
-
-            # 注意力参数只使用特征部分
-            cat_att_i = self.att_i
-            cat_att_j = self.att_j
-
-            # ---- 计算注意力系数 ----
-        assert key_i.shape[-1] == cat_att_i.shape[-1], \
-            f"Shape mismatch after fix: {key_i.shape[-1]} vs {cat_att_i.shape[-1]}"
-
-        if key_i.shape[-1] != cat_att_i.shape[-1]:
-            # 调整大小，使它们匹配
-            # 可以选择做扩展或者调整尺寸
-            cat_att_i = cat_att_i.expand(-1, -1, key_i.shape[-1])
-
 
         alpha = (key_i * cat_att_i).sum(-1) + (key_j * cat_att_j).sum(-1)
 
-
         alpha = alpha.view(-1, self.heads, 1)
-
 
         alpha = F.leaky_relu(alpha, self.negative_slope)
         alpha = softmax(alpha, edge_index_i, num_nodes=size_i)
@@ -141,9 +123,8 @@ class GraphLayer(MessagePassing):
             self.__alpha__ = alpha
 
         alpha = F.dropout(alpha, p=self.dropout, training=self.training)
-        
-        return x_j * alpha.view(-1, self.heads, 1)
 
+        return x_j * alpha.view(-1, self.heads, 1)
 
 
     def __repr__(self):

@@ -1643,3 +1643,757 @@ epoch (70 / 100) (Loss:0.00437600, ACU_loss:1.17276813)
 F1 score: 0.7929986374593858
 precision: 0.9345193970842599
 recall: 0.6885126524667758
+
+
+2025-11-20 15:37:01,476 - INFO -     [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:37:01,476 - INFO -     [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:37:01,476 - INFO -
+========== Generation 1 ==========
+2025-11-20 15:37:01,476 - INFO - Population architectures (before eval):
+2025-11-20 15:37:01,476 - INFO -
+Evaluating architecture 1/2 ...
+2025-11-20 15:37:01,476 - INFO -     [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:37:01,476 - INFO -   -> Using arch: depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:37:01,476 - INFO -   -> ops: ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE']
+2025-11-20 15:37:01,476 - INFO -   -> hidden_dims: [256, 128, 256, 128]
+2025-11-20 15:37:03,088 - INFO - epoch (0 / 35) (Loss:0.12128212, ACU_loss:8.12590228)
+2025-11-20 15:37:04,331 - INFO - epoch (1 / 35) (Loss:0.03806729, ACU_loss:2.55050875)
+2025-11-20 15:37:05,587 - INFO - epoch (2 / 35) (Loss:0.02707774, ACU_loss:1.81420887)
+2025-11-20 15:37:06,800 - INFO - epoch (3 / 35) (Loss:0.02076519, ACU_loss:1.39126746)
+2025-11-20 15:37:08,014 - INFO - epoch (4 / 35) (Loss:0.01669113, ACU_loss:1.11830555)
+2025-11-20 15:37:08,930 - INFO - epoch (5 / 35) (Loss:0.01468933, ACU_loss:0.98418507)
+2025-11-20 15:37:09,748 - INFO - epoch (6 / 35) (Loss:0.01294609, ACU_loss:0.86738824)
+2025-11-20 15:37:10,558 - INFO - epoch (7 / 35) (Loss:0.01182288, ACU_loss:0.79213279)
+2025-11-20 15:37:11,375 - INFO - epoch (8 / 35) (Loss:0.01073648, ACU_loss:0.71934403)
+2025-11-20 15:37:12,189 - INFO - epoch (9 / 35) (Loss:0.01016613, ACU_loss:0.68113055)
+2025-11-20 15:37:13,015 - INFO - epoch (10 / 35) (Loss:0.00942029, ACU_loss:0.63115968)
+2025-11-20 15:37:13,836 - INFO - epoch (11 / 35) (Loss:0.00877267, ACU_loss:0.58776919)
+2025-11-20 15:37:14,650 - INFO - epoch (12 / 35) (Loss:0.00834531, ACU_loss:0.55913607)
+2025-11-20 15:37:15,473 - INFO - epoch (13 / 35) (Loss:0.00819085, ACU_loss:0.54878721)
+2025-11-20 15:37:16,290 - INFO - epoch (14 / 35) (Loss:0.00767941, ACU_loss:0.51452065)
+2025-11-20 15:37:17,106 - INFO - epoch (15 / 35) (Loss:0.00761021, ACU_loss:0.50988431)
+2025-11-20 15:37:17,926 - INFO - epoch (16 / 35) (Loss:0.00741827, ACU_loss:0.49702395)
+2025-11-20 15:37:18,757 - INFO - epoch (17 / 35) (Loss:0.00708953, ACU_loss:0.47499877)
+2025-11-20 15:37:19,706 - INFO - epoch (18 / 35) (Loss:0.00698650, ACU_loss:0.46809555)
+2025-11-20 15:37:20,877 - INFO - epoch (19 / 35) (Loss:0.00676479, ACU_loss:0.45324075)
+2025-11-20 15:37:22,132 - INFO - epoch (20 / 35) (Loss:0.00656389, ACU_loss:0.43978061)
+2025-11-20 15:37:23,363 - INFO - epoch (21 / 35) (Loss:0.00653799, ACU_loss:0.43804561)
+2025-11-20 15:37:24,595 - INFO - epoch (22 / 35) (Loss:0.00663587, ACU_loss:0.44460340)
+2025-11-20 15:37:25,774 - INFO - epoch (23 / 35) (Loss:0.00648155, ACU_loss:0.43426388)
+2025-11-20 15:37:26,994 - INFO - epoch (24 / 35) (Loss:0.00643911, ACU_loss:0.43142026)
+2025-11-20 15:37:28,070 - INFO - epoch (25 / 35) (Loss:0.00642909, ACU_loss:0.43074878)
+2025-11-20 15:37:29,273 - INFO - epoch (26 / 35) (Loss:0.00616713, ACU_loss:0.41319742)
+2025-11-20 15:37:30,497 - INFO - epoch (27 / 35) (Loss:0.00609931, ACU_loss:0.40865383)
+2025-11-20 15:37:31,736 - INFO - epoch (28 / 35) (Loss:0.00604481, ACU_loss:0.40500207)
+2025-11-20 15:37:32,992 - INFO - epoch (29 / 35) (Loss:0.00607305, ACU_loss:0.40689452)
+2025-11-20 15:37:34,233 - INFO - epoch (30 / 35) (Loss:0.00597739, ACU_loss:0.40048495)
+2025-11-20 15:37:35,466 - INFO - epoch (31 / 35) (Loss:0.00593645, ACU_loss:0.39774233)
+2025-11-20 15:37:36,708 - INFO - epoch (32 / 35) (Loss:0.00589985, ACU_loss:0.39528971)
+2025-11-20 15:37:37,762 - INFO - epoch (33 / 35) (Loss:0.00579911, ACU_loss:0.38854026)
+2025-11-20 15:37:38,719 - INFO - epoch (34 / 35) (Loss:0.00573339, ACU_loss:0.38413733)
+2025-11-20 15:37:38,844 - INFO -   Architecture 1 validation loss: 0.003244
+2025-11-20 15:37:38,845 - INFO -
+Evaluating architecture 2/2 ...
+2025-11-20 15:37:38,845 - INFO -     [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:37:38,845 - INFO -   -> Using arch: depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:37:38,845 - INFO -   -> ops: ['GCN', 'GraphLayer', 'GraphSAGE']
+2025-11-20 15:37:38,845 - INFO -   -> hidden_dims: [128, 64, 128]
+2025-11-20 15:37:39,745 - INFO - epoch (0 / 35) (Loss:0.08120472, ACU_loss:5.44071610)
+2025-11-20 15:37:40,724 - INFO - epoch (1 / 35) (Loss:0.02749671, ACU_loss:1.84227961)
+2025-11-20 15:37:41,700 - INFO - epoch (2 / 35) (Loss:0.02140586, ACU_loss:1.43419264)
+2025-11-20 15:37:42,663 - INFO - epoch (3 / 35) (Loss:0.01901651, ACU_loss:1.27410587)
+2025-11-20 15:37:43,461 - INFO - epoch (4 / 35) (Loss:0.01753133, ACU_loss:1.17459918)
+2025-11-20 15:37:44,115 - INFO - epoch (5 / 35) (Loss:0.01608788, ACU_loss:1.07788793)
+2025-11-20 15:37:44,749 - INFO - epoch (6 / 35) (Loss:0.01502389, ACU_loss:1.00660095)
+2025-11-20 15:37:45,441 - INFO - epoch (7 / 35) (Loss:0.01508543, ACU_loss:1.01072397)
+2025-11-20 15:37:46,375 - INFO - epoch (8 / 35) (Loss:0.01435502, ACU_loss:0.96178609)
+2025-11-20 15:37:47,318 - INFO - epoch (9 / 35) (Loss:0.01422279, ACU_loss:0.95292661)
+2025-11-20 15:37:48,263 - INFO - epoch (10 / 35) (Loss:0.01321958, ACU_loss:0.88571159)
+2025-11-20 15:37:49,192 - INFO - epoch (11 / 35) (Loss:0.01302806, ACU_loss:0.87287974)
+2025-11-20 15:37:50,386 - INFO - epoch (12 / 35) (Loss:0.01266948, ACU_loss:0.84885521)
+2025-11-20 15:37:51,404 - INFO - epoch (13 / 35) (Loss:0.01227708, ACU_loss:0.82256451)
+2025-11-20 15:37:52,389 - INFO - epoch (14 / 35) (Loss:0.01242349, ACU_loss:0.83237404)
+2025-11-20 15:37:53,372 - INFO - epoch (15 / 35) (Loss:0.01200618, ACU_loss:0.80441396)
+2025-11-20 15:37:54,391 - INFO - epoch (16 / 35) (Loss:0.01163338, ACU_loss:0.77943626)
+2025-11-20 15:37:55,433 - INFO - epoch (17 / 35) (Loss:0.01208868, ACU_loss:0.80994138)
+2025-11-20 15:37:56,386 - INFO - epoch (18 / 35) (Loss:0.01046712, ACU_loss:0.70129690)
+2025-11-20 15:37:57,391 - INFO - epoch (19 / 35) (Loss:0.01047891, ACU_loss:0.70208674)
+2025-11-20 15:37:58,363 - INFO - epoch (20 / 35) (Loss:0.01004839, ACU_loss:0.67324233)
+2025-11-20 15:37:59,354 - INFO - epoch (21 / 35) (Loss:0.00999481, ACU_loss:0.66965196)
+2025-11-20 15:38:00,398 - INFO - epoch (22 / 35) (Loss:0.00997395, ACU_loss:0.66825481)
+2025-11-20 15:38:01,388 - INFO - epoch (23 / 35) (Loss:0.00944997, ACU_loss:0.63314817)
+2025-11-20 15:38:02,394 - INFO - epoch (24 / 35) (Loss:0.00936160, ACU_loss:0.62722752)
+2025-11-20 15:38:03,363 - INFO - epoch (25 / 35) (Loss:0.00902203, ACU_loss:0.60447616)
+2025-11-20 15:38:04,300 - INFO - epoch (26 / 35) (Loss:0.00893139, ACU_loss:0.59840285)
+2025-11-20 15:38:05,234 - INFO - epoch (27 / 35) (Loss:0.00898113, ACU_loss:0.60173558)
+2025-11-20 15:38:06,193 - INFO - epoch (28 / 35) (Loss:0.00917982, ACU_loss:0.61504792)
+2025-11-20 15:38:07,148 - INFO - epoch (29 / 35) (Loss:0.00864707, ACU_loss:0.57935336)
+2025-11-20 15:38:08,104 - INFO - epoch (30 / 35) (Loss:0.00847992, ACU_loss:0.56815451)
+2025-11-20 15:38:09,066 - INFO - epoch (31 / 35) (Loss:0.00903440, ACU_loss:0.60530451)
+2025-11-20 15:38:10,019 - INFO - epoch (32 / 35) (Loss:0.00850002, ACU_loss:0.56950108)
+2025-11-20 15:38:10,982 - INFO - epoch (33 / 35) (Loss:0.00904113, ACU_loss:0.60575578)
+2025-11-20 15:38:11,937 - INFO - epoch (34 / 35) (Loss:0.00875556, ACU_loss:0.58662281)
+2025-11-20 15:38:12,051 - INFO -   Architecture 2 validation loss: 0.007707
+2025-11-20 15:38:12,051 - INFO -
+Generation 1 Results:
+2025-11-20 15:38:12,051 - INFO -   Best validation loss in this gen: 0.003244
+2025-11-20 15:38:12,051 - INFO -   Best architecture in this gen: {'depth': 4, 'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none'}
+2025-11-20 15:38:12,051 - INFO -   >>> New global best found! val_loss=0.003244
+2025-11-20 15:38:12,051 - INFO -
+Generating next generation...
+2025-11-20 15:38:12,051 - INFO -   [GA] pick parents:
+2025-11-20 15:38:12,051 - INFO -       L1: op=GraphLayer hidden=256
+2025-11-20 15:38:12,051 - INFO -       L2: op=GAT        hidden=128
+2025-11-20 15:38:12,051 - INFO -       L3: op=GraphSAGE  hidden=256
+2025-11-20 15:38:12,051 - INFO -       L4: op=SAGE       hidden=128
+2025-11-20 15:38:12,051 - INFO -       L1: op=GCN        hidden=128
+2025-11-20 15:38:12,051 - INFO -       L2: op=GraphLayer hidden=64
+2025-11-20 15:38:12,051 - INFO -       L3: op=GraphSAGE  hidden=128
+2025-11-20 15:38:12,051 - INFO -     [crossover] cut=2, target_d=3, raw child: {'ops': ['GraphLayer', 'GAT', 'GCN'], 'hidden_dims': [256, 128, 128], 'skip': 'none', 'depth': 3}
+2025-11-20 15:38:12,051 - INFO -     [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:38:12,051 - INFO -     -> no mutation
+2025-11-20 15:38:12,051 - INFO -     -> child after norm: depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:38:12,051 - INFO -
+========== Generation 2 ==========
+2025-11-20 15:38:12,051 - INFO - Population architectures (before eval):
+2025-11-20 15:38:12,051 - INFO -
+Evaluating architecture 1/2 ...
+2025-11-20 15:38:12,051 - INFO -     [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:38:12,051 - INFO -   -> Using arch: depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:38:12,051 - INFO -   -> ops: ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE']
+2025-11-20 15:38:12,051 - INFO -   -> hidden_dims: [256, 128, 256, 128]
+2025-11-20 15:38:13,185 - INFO - epoch (0 / 35) (Loss:0.10500939, ACU_loss:7.03562935)
+2025-11-20 15:38:14,408 - INFO - epoch (1 / 35) (Loss:0.03722366, ACU_loss:2.49398533)
+2025-11-20 15:38:15,605 - INFO - epoch (2 / 35) (Loss:0.02618120, ACU_loss:1.75414008)
+2025-11-20 15:38:16,593 - INFO - epoch (3 / 35) (Loss:0.02047654, ACU_loss:1.37192807)
+2025-11-20 15:38:17,793 - INFO - epoch (4 / 35) (Loss:0.01724579, ACU_loss:1.15546774)
+2025-11-20 15:38:18,997 - INFO - epoch (5 / 35) (Loss:0.01514257, ACU_loss:1.01455252)
+2025-11-20 15:38:20,264 - INFO - epoch (6 / 35) (Loss:0.01390710, ACU_loss:0.93177598)
+2025-11-20 15:38:21,471 - INFO - epoch (7 / 35) (Loss:0.01284589, ACU_loss:0.86067449)
+2025-11-20 15:38:22,690 - INFO - epoch (8 / 35) (Loss:0.01221615, ACU_loss:0.81848209)
+2025-11-20 15:38:23,847 - INFO - epoch (9 / 35) (Loss:0.01124140, ACU_loss:0.75317382)
+2025-11-20 15:38:25,069 - INFO - epoch (10 / 35) (Loss:0.01090191, ACU_loss:0.73042783)
+2025-11-20 15:38:26,297 - INFO - epoch (11 / 35) (Loss:0.01044682, ACU_loss:0.69993693)
+2025-11-20 15:38:27,539 - INFO - epoch (12 / 35) (Loss:0.00999375, ACU_loss:0.66958135)
+2025-11-20 15:38:28,760 - INFO - epoch (13 / 35) (Loss:0.00970196, ACU_loss:0.65003124)
+2025-11-20 15:38:29,995 - INFO - epoch (14 / 35) (Loss:0.00922452, ACU_loss:0.61804270)
+2025-11-20 15:38:31,216 - INFO - epoch (15 / 35) (Loss:0.00901776, ACU_loss:0.60418974)
+2025-11-20 15:38:32,429 - INFO - epoch (16 / 35) (Loss:0.00872037, ACU_loss:0.58426469)
+2025-11-20 15:38:33,677 - INFO - epoch (17 / 35) (Loss:0.00841572, ACU_loss:0.56385314)
+2025-11-20 15:38:34,795 - INFO - epoch (18 / 35) (Loss:0.00841657, ACU_loss:0.56391039)
+2025-11-20 15:38:36,057 - INFO - epoch (19 / 35) (Loss:0.00797780, ACU_loss:0.53451231)
+2025-11-20 15:38:37,283 - INFO - epoch (20 / 35) (Loss:0.00830112, ACU_loss:0.55617502)
+2025-11-20 15:38:38,490 - INFO - epoch (21 / 35) (Loss:0.00807077, ACU_loss:0.54074126)
+2025-11-20 15:38:39,687 - INFO - epoch (22 / 35) (Loss:0.00843277, ACU_loss:0.56499557)
+2025-11-20 15:38:40,802 - INFO - epoch (23 / 35) (Loss:0.00814200, ACU_loss:0.54551430)
+2025-11-20 15:38:41,973 - INFO - epoch (24 / 35) (Loss:0.00795624, ACU_loss:0.53306782)
+2025-11-20 15:38:42,959 - INFO - epoch (25 / 35) (Loss:0.00791700, ACU_loss:0.53043888)
+2025-11-20 15:38:44,075 - INFO - epoch (26 / 35) (Loss:0.00765958, ACU_loss:0.51319198)
+2025-11-20 15:38:45,267 - INFO - epoch (27 / 35) (Loss:0.00767286, ACU_loss:0.51408134)
+2025-11-20 15:38:46,493 - INFO - epoch (28 / 35) (Loss:0.00759176, ACU_loss:0.50864803)
+2025-11-20 15:38:47,632 - INFO - epoch (29 / 35) (Loss:0.00711803, ACU_loss:0.47690789)
+2025-11-20 15:38:48,863 - INFO - epoch (30 / 35) (Loss:0.00700646, ACU_loss:0.46943266)
+2025-11-20 15:38:50,086 - INFO - epoch (31 / 35) (Loss:0.00685795, ACU_loss:0.45948266)
+2025-11-20 15:38:51,280 - INFO - epoch (32 / 35) (Loss:0.00681590, ACU_loss:0.45666523)
+2025-11-20 15:38:52,293 - INFO - epoch (33 / 35) (Loss:0.00676392, ACU_loss:0.45318253)
+2025-11-20 15:38:53,418 - INFO - epoch (34 / 35) (Loss:0.00674017, ACU_loss:0.45159156)
+2025-11-20 15:38:53,553 - INFO -   Architecture 1 validation loss: 0.004134
+2025-11-20 15:38:53,553 - INFO -
+Evaluating architecture 2/2 ...
+2025-11-20 15:38:53,553 - INFO -     [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:38:53,553 - INFO -   -> Using arch: depth=3, len(ops)=3, len(hiddens)=3, skip=none
+2025-11-20 15:38:53,553 - INFO -   -> ops: ['GraphLayer', 'GAT', 'GCN']
+2025-11-20 15:38:53,553 - INFO -   -> hidden_dims: [256, 128, 128]
+2025-11-20 15:38:54,591 - INFO - epoch (0 / 35) (Loss:0.10722126, ACU_loss:7.18382413)
+2025-11-20 15:38:55,693 - INFO - epoch (1 / 35) (Loss:0.03915441, ACU_loss:2.62334523)
+2025-11-20 15:38:57,001 - INFO - epoch (2 / 35) (Loss:0.03118821, ACU_loss:2.08961040)
+2025-11-20 15:38:58,066 - INFO - epoch (3 / 35) (Loss:0.02550904, ACU_loss:1.70910564)
+2025-11-20 15:38:59,177 - INFO - epoch (4 / 35) (Loss:0.02224149, ACU_loss:1.49018009)
+2025-11-20 15:39:00,288 - INFO - epoch (5 / 35) (Loss:0.02244312, ACU_loss:1.50368925)
+2025-11-20 15:39:01,400 - INFO - epoch (6 / 35) (Loss:0.02155753, ACU_loss:1.44435431)
+2025-11-20 15:39:02,513 - INFO - epoch (7 / 35) (Loss:0.01902745, ACU_loss:1.27483919)
+2025-11-20 15:39:03,629 - INFO - epoch (8 / 35) (Loss:0.01787797, ACU_loss:1.19782417)
+2025-11-20 15:39:04,761 - INFO - epoch (9 / 35) (Loss:0.01635021, ACU_loss:1.09546397)
+2025-11-20 15:39:05,890 - INFO - epoch (10 / 35) (Loss:0.01556957, ACU_loss:1.04316129)
+2025-11-20 15:39:06,998 - INFO - epoch (11 / 35) (Loss:0.01487110, ACU_loss:0.99636370)
+2025-11-20 15:39:08,100 - INFO - epoch (12 / 35) (Loss:0.01379073, ACU_loss:0.92397897)
+2025-11-20 15:39:09,209 - INFO - epoch (13 / 35) (Loss:0.01372898, ACU_loss:0.91984147)
+2025-11-20 15:39:10,326 - INFO - epoch (14 / 35) (Loss:0.01345007, ACU_loss:0.90115474)
+2025-11-20 15:39:11,447 - INFO - epoch (15 / 35) (Loss:0.01263958, ACU_loss:0.84685206)
+2025-11-20 15:39:12,550 - INFO - epoch (16 / 35) (Loss:0.01237310, ACU_loss:0.82899749)
+2025-11-20 15:39:13,651 - INFO - epoch (17 / 35) (Loss:0.01165375, ACU_loss:0.78080128)
+2025-11-20 15:39:14,750 - INFO - epoch (18 / 35) (Loss:0.01106892, ACU_loss:0.74161796)
+2025-11-20 15:39:15,847 - INFO - epoch (19 / 35) (Loss:0.01052804, ACU_loss:0.70537852)
+2025-11-20 15:39:16,953 - INFO - epoch (20 / 35) (Loss:0.01029951, ACU_loss:0.69006687)
+2025-11-20 15:39:18,061 - INFO - epoch (21 / 35) (Loss:0.01010750, ACU_loss:0.67720219)
+2025-11-20 15:39:19,153 - INFO - epoch (22 / 35) (Loss:0.00978230, ACU_loss:0.65541429)
+2025-11-20 15:39:20,248 - INFO - epoch (23 / 35) (Loss:0.00953900, ACU_loss:0.63911279)
+2025-11-20 15:39:21,346 - INFO - epoch (24 / 35) (Loss:0.00957060, ACU_loss:0.64123014)
+2025-11-20 15:39:22,437 - INFO - epoch (25 / 35) (Loss:0.00968828, ACU_loss:0.64911481)
+2025-11-20 15:39:23,349 - INFO - epoch (26 / 35) (Loss:0.00956243, ACU_loss:0.64068249)
+2025-11-20 15:39:24,446 - INFO - epoch (27 / 35) (Loss:0.00944920, ACU_loss:0.63309667)
+2025-11-20 15:39:25,558 - INFO - epoch (28 / 35) (Loss:0.00954067, ACU_loss:0.63922467)
+2025-11-20 15:39:26,666 - INFO - epoch (29 / 35) (Loss:0.00927890, ACU_loss:0.62168626)
+2025-11-20 15:39:27,804 - INFO - epoch (30 / 35) (Loss:0.00883095, ACU_loss:0.59167395)
+2025-11-20 15:39:28,833 - INFO - epoch (31 / 35) (Loss:0.00871115, ACU_loss:0.58364687)
+2025-11-20 15:39:29,936 - INFO - epoch (32 / 35) (Loss:0.00864848, ACU_loss:0.57944809)
+2025-11-20 15:39:31,060 - INFO - epoch (33 / 35) (Loss:0.00878383, ACU_loss:0.58851662)
+2025-11-20 15:39:32,191 - INFO - epoch (34 / 35) (Loss:0.00865735, ACU_loss:0.58004249)
+2025-11-20 15:39:32,323 - INFO -   Architecture 2 validation loss: 0.007714
+2025-11-20 15:39:32,323 - INFO -
+Generation 2 Results:
+2025-11-20 15:39:32,323 - INFO -   Best validation loss in this gen: 0.004134
+2025-11-20 15:39:32,323 - INFO -   Best architecture in this gen: {'depth': 4, 'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none'}
+2025-11-20 15:39:32,323 - INFO -
+Generating next generation...
+2025-11-20 15:39:32,323 - INFO -   [GA] pick parents:
+2025-11-20 15:39:32,323 - INFO -       L1: op=GraphLayer hidden=256
+2025-11-20 15:39:32,323 - INFO -       L2: op=GAT        hidden=128
+2025-11-20 15:39:32,323 - INFO -       L3: op=GraphSAGE  hidden=256
+2025-11-20 15:39:32,323 - INFO -       L4: op=SAGE       hidden=128
+2025-11-20 15:39:32,323 - INFO -       L1: op=GraphLayer hidden=256
+2025-11-20 15:39:32,323 - INFO -       L2: op=GAT        hidden=128
+2025-11-20 15:39:32,323 - INFO -       L3: op=GCN        hidden=128
+2025-11-20 15:39:32,324 - INFO -     [crossover] cut=2, target_d=4, raw child: {'ops': ['GraphLayer', 'GAT', 'GraphLayer', 'GAT'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none', 'depth': 4}
+2025-11-20 15:39:32,324 - INFO -     [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:39:32,324 - INFO -     -> mutate child
+2025-11-20 15:39:32,324 - INFO -     [mutate] change op at 0: GraphLayer -> GraphSAGE
+2025-11-20 15:39:32,324 - INFO -     [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:39:32,324 - INFO -     -> child after norm: depth=4, len(ops)=4, len(hiddens)=4, skip=none
+2025-11-20 15:39:32,324 - INFO -
+========== Final Result ==========
+2025-11-20 15:39:32,324 - INFO - Best Architecture Overall: {'depth': 4, 'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none'}
+2025-11-20 15:39:32,324 - INFO - Best Validation Loss: 0.003244
+2025-11-20 15:39:33,646 - INFO - epoch (0 / 100) (Loss:0.10206122, ACU_loss:6.83810146)
+2025-11-20 15:39:35,044 - INFO - epoch (1 / 100) (Loss:0.03645826, ACU_loss:2.44270371)
+2025-11-20 15:39:36,415 - INFO - epoch (2 / 100) (Loss:0.02563095, ACU_loss:1.71727377)
+2025-11-20 15:39:37,760 - INFO - epoch (3 / 100) (Loss:0.01902878, ACU_loss:1.27492822)
+2025-11-20 15:39:39,021 - INFO - epoch (4 / 100) (Loss:0.01575796, ACU_loss:1.05578305)
+2025-11-20 15:39:39,981 - INFO - epoch (5 / 100) (Loss:0.01335039, ACU_loss:0.89447621)
+2025-11-20 15:39:41,250 - INFO - epoch (6 / 100) (Loss:0.01192949, ACU_loss:0.79927598)
+2025-11-20 15:39:42,580 - INFO - epoch (7 / 100) (Loss:0.01037111, ACU_loss:0.69486459)
+2025-11-20 15:39:43,762 - INFO - epoch (8 / 100) (Loss:0.00918369, ACU_loss:0.61530737)
+2025-11-20 15:39:45,072 - INFO - epoch (9 / 100) (Loss:0.00863366, ACU_loss:0.57845543)
+2025-11-20 15:39:46,416 - INFO - epoch (10 / 100) (Loss:0.00805569, ACU_loss:0.53973109)
+2025-11-20 15:39:47,689 - INFO - epoch (11 / 100) (Loss:0.00747904, ACU_loss:0.50109571)
+2025-11-20 15:39:49,016 - INFO - epoch (12 / 100) (Loss:0.00719790, ACU_loss:0.48225948)
+2025-11-20 15:39:50,352 - INFO - epoch (13 / 100) (Loss:0.00688100, ACU_loss:0.46102716)
+2025-11-20 15:39:51,716 - INFO - epoch (14 / 100) (Loss:0.00683831, ACU_loss:0.45816682)
+2025-11-20 15:39:53,126 - INFO - epoch (15 / 100) (Loss:0.00644114, ACU_loss:0.43155624)
+2025-11-20 15:39:54,505 - INFO - epoch (16 / 100) (Loss:0.00613111, ACU_loss:0.41078458)
+2025-11-20 15:39:55,910 - INFO - epoch (17 / 100) (Loss:0.00591240, ACU_loss:0.39613065)
+2025-11-20 15:39:57,206 - INFO - epoch (18 / 100) (Loss:0.00578223, ACU_loss:0.38740974)
+2025-11-20 15:39:58,547 - INFO - epoch (19 / 100) (Loss:0.00569307, ACU_loss:0.38143549)
+2025-11-20 15:39:59,879 - INFO - epoch (20 / 100) (Loss:0.00560426, ACU_loss:0.37548544)
+2025-11-20 15:40:01,157 - INFO - epoch (21 / 100) (Loss:0.00563540, ACU_loss:0.37757164)
+2025-11-20 15:40:02,348 - INFO - epoch (22 / 100) (Loss:0.00536164, ACU_loss:0.35922987)
+2025-11-20 15:40:03,690 - INFO - epoch (23 / 100) (Loss:0.00525458, ACU_loss:0.35205679)
+2025-11-20 15:40:05,055 - INFO - epoch (24 / 100) (Loss:0.00542247, ACU_loss:0.36330531)
+2025-11-20 15:40:06,488 - INFO - epoch (25 / 100) (Loss:0.00509683, ACU_loss:0.34148747)
+2025-11-20 15:40:07,826 - INFO - epoch (26 / 100) (Loss:0.00489618, ACU_loss:0.32804399)
+2025-11-20 15:40:09,169 - INFO - epoch (27 / 100) (Loss:0.00496558, ACU_loss:0.33269363)
+2025-11-20 15:40:10,495 - INFO - epoch (28 / 100) (Loss:0.00498284, ACU_loss:0.33385035)
+2025-11-20 15:40:11,834 - INFO - epoch (29 / 100) (Loss:0.00488717, ACU_loss:0.32744042)
+2025-11-20 15:40:13,188 - INFO - epoch (30 / 100) (Loss:0.00494499, ACU_loss:0.33131429)
+2025-11-20 15:40:14,524 - INFO - epoch (31 / 100) (Loss:0.00479064, ACU_loss:0.32097282)
+2025-11-20 15:40:15,870 - INFO - epoch (32 / 100) (Loss:0.00471095, ACU_loss:0.31563371)
+2025-11-20 15:40:17,200 - INFO - epoch (33 / 100) (Loss:0.00462875, ACU_loss:0.31012605)
+2025-11-20 15:40:18,535 - INFO - epoch (34 / 100) (Loss:0.00463429, ACU_loss:0.31049768)
+2025-11-20 15:40:19,866 - INFO - epoch (35 / 100) (Loss:0.00457293, ACU_loss:0.30638601)
+2025-11-20 15:40:21,190 - INFO - epoch (36 / 100) (Loss:0.00455433, ACU_loss:0.30514006)
+2025-11-20 15:40:22,465 - INFO - epoch (37 / 100) (Loss:0.00458448, ACU_loss:0.30716041)
+2025-11-20 15:40:23,809 - INFO - epoch (38 / 100) (Loss:0.00456051, ACU_loss:0.30555438)
+2025-11-20 15:40:25,142 - INFO - epoch (39 / 100) (Loss:0.00450583, ACU_loss:0.30189040)
+2025-11-20 15:40:26,487 - INFO - epoch (40 / 100) (Loss:0.00445746, ACU_loss:0.29864971)
+2025-11-20 15:40:27,685 - INFO - epoch (41 / 100) (Loss:0.00439338, ACU_loss:0.29435642)
+2025-11-20 15:40:28,978 - INFO - epoch (42 / 100) (Loss:0.00439921, ACU_loss:0.29474708)
+2025-11-20 15:40:30,256 - INFO - epoch (43 / 100) (Loss:0.00438916, ACU_loss:0.29407393)
+2025-11-20 15:40:31,608 - INFO - epoch (44 / 100) (Loss:0.00436518, ACU_loss:0.29246704)
+2025-11-20 15:40:32,555 - INFO - epoch (45 / 100) (Loss:0.00436614, ACU_loss:0.29253164)
+2025-11-20 15:40:33,553 - INFO - epoch (46 / 100) (Loss:0.00435870, ACU_loss:0.29203280)
+2025-11-20 15:40:34,792 - INFO - epoch (47 / 100) (Loss:0.00436415, ACU_loss:0.29239809)
+2025-11-20 15:40:35,882 - INFO - epoch (48 / 100) (Loss:0.00435692, ACU_loss:0.29191381)
+2025-11-20 15:40:37,063 - INFO - epoch (49 / 100) (Loss:0.00428744, ACU_loss:0.28725876)
+2025-11-20 15:40:38,223 - INFO - epoch (50 / 100) (Loss:0.00430265, ACU_loss:0.28827725)
+2025-11-20 15:40:39,537 - INFO - epoch (51 / 100) (Loss:0.00431689, ACU_loss:0.28923169)
+2025-11-20 15:40:40,850 - INFO - epoch (52 / 100) (Loss:0.00427565, ACU_loss:0.28646869)
+2025-11-20 15:40:42,152 - INFO - epoch (53 / 100) (Loss:0.00428228, ACU_loss:0.28691287)
+2025-11-20 15:40:43,455 - INFO - epoch (54 / 100) (Loss:0.00427089, ACU_loss:0.28614931)
+2025-11-20 15:40:44,793 - INFO - epoch (55 / 100) (Loss:0.00428350, ACU_loss:0.28699437)
+2025-11-20 15:40:46,108 - INFO - epoch (56 / 100) (Loss:0.00425653, ACU_loss:0.28518772)
+2025-11-20 15:40:47,432 - INFO - epoch (57 / 100) (Loss:0.00423078, ACU_loss:0.28346195)
+2025-11-20 15:40:48,753 - INFO - epoch (58 / 100) (Loss:0.00427437, ACU_loss:0.28638299)
+2025-11-20 15:40:50,072 - INFO - epoch (59 / 100) (Loss:0.00425290, ACU_loss:0.28494432)
+2025-11-20 15:40:51,418 - INFO - epoch (60 / 100) (Loss:0.00429294, ACU_loss:0.28762691)
+2025-11-20 15:40:52,767 - INFO - epoch (61 / 100) (Loss:0.00427417, ACU_loss:0.28636967)
+2025-11-20 15:40:54,251 - INFO - epoch (62 / 100) (Loss:0.00423042, ACU_loss:0.28343824)
+2025-11-20 15:40:55,550 - INFO - epoch (63 / 100) (Loss:0.00425141, ACU_loss:0.28484474)
+2025-11-20 15:40:56,760 - INFO - epoch (64 / 100) (Loss:0.00424493, ACU_loss:0.28441059)
+2025-11-20 15:40:58,055 - INFO - epoch (65 / 100) (Loss:0.00424810, ACU_loss:0.28462300)
+2025-11-20 15:40:59,372 - INFO - epoch (66 / 100) (Loss:0.00422748, ACU_loss:0.28324129)
+2025-11-20 15:41:00,687 - INFO - epoch (67 / 100) (Loss:0.00423836, ACU_loss:0.28396997)
+2025-11-20 15:41:02,004 - INFO - epoch (68 / 100) (Loss:0.00420304, ACU_loss:0.28160374)
+2025-11-20 15:41:03,137 - INFO - epoch (69 / 100) (Loss:0.00422185, ACU_loss:0.28286421)
+2025-11-20 15:41:04,302 - INFO - epoch (70 / 100) (Loss:0.00422911, ACU_loss:0.28335031)
+2025-11-20 15:41:05,394 - INFO - epoch (71 / 100) (Loss:0.00422737, ACU_loss:0.28323364)
+2025-11-20 15:41:06,754 - INFO - epoch (72 / 100) (Loss:0.00421609, ACU_loss:0.28247784)
+2025-11-20 15:41:08,098 - INFO - epoch (73 / 100) (Loss:0.00422217, ACU_loss:0.28288544)
+2025-11-20 15:41:09,416 - INFO - epoch (74 / 100) (Loss:0.00420356, ACU_loss:0.28163838)
+2025-11-20 15:41:10,739 - INFO - epoch (75 / 100) (Loss:0.00418428, ACU_loss:0.28034666)
+2025-11-20 15:41:12,036 - INFO - epoch (76 / 100) (Loss:0.00420355, ACU_loss:0.28163814)
+2025-11-20 15:41:13,341 - INFO - epoch (77 / 100) (Loss:0.00419000, ACU_loss:0.28072985)
+2025-11-20 15:41:14,651 - INFO - epoch (78 / 100) (Loss:0.00420053, ACU_loss:0.28143563)
+2025-11-20 15:41:15,962 - INFO - epoch (79 / 100) (Loss:0.00420678, ACU_loss:0.28185440)
+2025-11-20 15:41:17,274 - INFO - epoch (80 / 100) (Loss:0.00419538, ACU_loss:0.28109013)
+2025-11-20 15:41:18,596 - INFO - epoch (81 / 100) (Loss:0.00419480, ACU_loss:0.28105148)
+2025-11-20 15:41:19,921 - INFO - epoch (82 / 100) (Loss:0.00419445, ACU_loss:0.28102805)
+2025-11-20 15:41:32,606 - INFO - =========================** Result **============================
+2025-11-20 15:41:32,606 - INFO - F1 score: 0.8234171174037543
+2025-11-20 15:41:32,606 - INFO - precision: 0.9865311308767472
+2025-11-20 15:41:32,606 - INFO - recall: 0.7067176406335336
+
+
+
+root@autodl-container-bf49418a72-ac3540ab:~/autodl-tmp/GDNmain# python main.py
+    [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+    [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+
+========== Generation 1 ==========
+Population architectures (before eval):
+  [1] depth=4 | ops=['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'] | hidden=[256, 128, 256, 128] | skip=none
+  [2] depth=3 | ops=['GCN', 'GraphLayer', 'GraphSAGE'] | hidden=[128, 64, 128] | skip=none
+
+Evaluating architecture 1/2 ...
+    [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+  -> Using arch: depth=4, len(ops)=4, len(hiddens)=4, skip=none
+  -> ops: ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE']
+  -> hidden_dims: [256, 128, 256, 128]
+    -> build_arch for NAS layer 0
+epoch (0 / 35) (Loss:0.12118569, ACU_loss:8.11944153)
+epoch (1 / 35) (Loss:0.03818035, ACU_loss:2.55808356)
+epoch (2 / 35) (Loss:0.02712672, ACU_loss:1.81749054)
+epoch (3 / 35) (Loss:0.02068909, ACU_loss:1.38616910)
+epoch (4 / 35) (Loss:0.01695435, ACU_loss:1.13594154)
+epoch (5 / 35) (Loss:0.01411938, ACU_loss:0.94599850)
+epoch (6 / 35) (Loss:0.01269374, ACU_loss:0.85048050)
+epoch (7 / 35) (Loss:0.01129756, ACU_loss:0.75693653)
+epoch (8 / 35) (Loss:0.01068441, ACU_loss:0.71585575)
+epoch (9 / 35) (Loss:0.00986331, ACU_loss:0.66084150)
+epoch (10 / 35) (Loss:0.00932035, ACU_loss:0.62446335)
+epoch (11 / 35) (Loss:0.00873438, ACU_loss:0.58520324)
+epoch (12 / 35) (Loss:0.00847926, ACU_loss:0.56811049)
+epoch (13 / 35) (Loss:0.00815419, ACU_loss:0.54633080)
+epoch (14 / 35) (Loss:0.00766515, ACU_loss:0.51356498)
+epoch (15 / 35) (Loss:0.00758600, ACU_loss:0.50826210)
+epoch (16 / 35) (Loss:0.00737093, ACU_loss:0.49385243)
+epoch (17 / 35) (Loss:0.00726453, ACU_loss:0.48672382)
+epoch (18 / 35) (Loss:0.00704870, ACU_loss:0.47226280)
+epoch (19 / 35) (Loss:0.00683881, ACU_loss:0.45820027)
+epoch (20 / 35) (Loss:0.00708296, ACU_loss:0.47455826)
+epoch (21 / 35) (Loss:0.00675223, ACU_loss:0.45239922)
+epoch (22 / 35) (Loss:0.00688878, ACU_loss:0.46154850)
+epoch (23 / 35) (Loss:0.00662965, ACU_loss:0.44418680)
+epoch (24 / 35) (Loss:0.00653581, ACU_loss:0.43789929)
+epoch (25 / 35) (Loss:0.00626020, ACU_loss:0.41943335)
+epoch (26 / 35) (Loss:0.00622349, ACU_loss:0.41697377)
+epoch (27 / 35) (Loss:0.00591589, ACU_loss:0.39636483)
+epoch (28 / 35) (Loss:0.00566976, ACU_loss:0.37987419)
+epoch (29 / 35) (Loss:0.00570223, ACU_loss:0.38204922)
+epoch (30 / 35) (Loss:0.00565529, ACU_loss:0.37890444)
+epoch (31 / 35) (Loss:0.00559289, ACU_loss:0.37472362)
+epoch (32 / 35) (Loss:0.00554922, ACU_loss:0.37179780)
+epoch (33 / 35) (Loss:0.00555088, ACU_loss:0.37190906)
+epoch (34 / 35) (Loss:0.00542526, ACU_loss:0.36349235)
+  Architecture 1 validation loss: 0.002557
+
+Evaluating architecture 2/2 ...
+    [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+  -> Using arch: depth=3, len(ops)=3, len(hiddens)=3, skip=none
+  -> ops: ['GCN', 'GraphLayer', 'GraphSAGE']
+  -> hidden_dims: [128, 64, 128]
+    -> build_arch for NAS layer 0
+epoch (0 / 35) (Loss:0.08124016, ACU_loss:5.44309043)
+epoch (1 / 35) (Loss:0.02748152, ACU_loss:1.84126193)
+epoch (2 / 35) (Loss:0.02129034, ACU_loss:1.42645302)
+epoch (3 / 35) (Loss:0.01914500, ACU_loss:1.28271482)
+epoch (4 / 35) (Loss:0.01747158, ACU_loss:1.17059591)
+epoch (5 / 35) (Loss:0.01634915, ACU_loss:1.09539328)
+epoch (6 / 35) (Loss:0.01519090, ACU_loss:1.01779057)
+epoch (7 / 35) (Loss:0.01467169, ACU_loss:0.98300316)
+epoch (8 / 35) (Loss:0.01406802, ACU_loss:0.94255749)
+epoch (9 / 35) (Loss:0.01403862, ACU_loss:0.94058741)
+epoch (10 / 35) (Loss:0.01326748, ACU_loss:0.88892124)
+epoch (11 / 35) (Loss:0.01355278, ACU_loss:0.90803641)
+epoch (12 / 35) (Loss:0.01326259, ACU_loss:0.88859370)
+epoch (13 / 35) (Loss:0.01201447, ACU_loss:0.80496942)
+epoch (14 / 35) (Loss:0.01214698, ACU_loss:0.81384757)
+epoch (15 / 35) (Loss:0.01165435, ACU_loss:0.78084117)
+epoch (16 / 35) (Loss:0.01184170, ACU_loss:0.79339419)
+epoch (17 / 35) (Loss:0.01110955, ACU_loss:0.74433983)
+epoch (18 / 35) (Loss:0.01039476, ACU_loss:0.69644917)
+epoch (19 / 35) (Loss:0.00997991, ACU_loss:0.66865424)
+epoch (20 / 35) (Loss:0.00982965, ACU_loss:0.65858664)
+epoch (21 / 35) (Loss:0.00949835, ACU_loss:0.63638974)
+epoch (22 / 35) (Loss:0.00942943, ACU_loss:0.63177160)
+epoch (23 / 35) (Loss:0.00918440, ACU_loss:0.61535463)
+epoch (24 / 35) (Loss:0.00944595, ACU_loss:0.63287869)
+epoch (25 / 35) (Loss:0.00937867, ACU_loss:0.62837056)
+epoch (26 / 35) (Loss:0.00927357, ACU_loss:0.62132949)
+epoch (27 / 35) (Loss:0.00918735, ACU_loss:0.61555219)
+epoch (28 / 35) (Loss:0.00932762, ACU_loss:0.62495085)
+epoch (29 / 35) (Loss:0.00883899, ACU_loss:0.59221220)
+epoch (30 / 35) (Loss:0.00915504, ACU_loss:0.61338773)
+epoch (31 / 35) (Loss:0.00931506, ACU_loss:0.62410891)
+epoch (32 / 35) (Loss:0.00884416, ACU_loss:0.59255846)
+epoch (33 / 35) (Loss:0.00866152, ACU_loss:0.58032174)
+epoch (34 / 35) (Loss:0.00851571, ACU_loss:0.57055268)
+  Architecture 2 validation loss: 0.005473
+
+Generation 1 Results:
+  Best validation loss in this gen: 0.002557
+  Best architecture in this gen: {'depth': 4, 'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none'}
+  >>> New global best found! val_loss=0.002557
+
+Generating next generation...
+  [GA] pick parents:
+    parent1: depth=4, skip=none
+      L1: op=GraphLayer hidden=256
+      L2: op=GAT        hidden=128
+      L3: op=GraphSAGE  hidden=256
+      L4: op=SAGE       hidden=128
+    parent2: depth=3, skip=none
+      L1: op=GCN        hidden=128
+      L2: op=GraphLayer hidden=64
+      L3: op=GraphSAGE  hidden=128
+    [crossover] cut=2, target_d=3, raw child: {'ops': ['GraphLayer', 'GAT', 'GCN'], 'hidden_dims': [256, 128, 128], 'skip': 'none', 'depth': 3}
+    [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+    -> no mutation
+    -> child after norm: depth=3, len(ops)=3, len(hiddens)=3, skip=none
+
+========== Generation 2 ==========
+Population architectures (before eval):
+  [1] depth=4 | ops=['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'] | hidden=[256, 128, 256, 128] | skip=none
+  [2] depth=3 | ops=['GraphLayer', 'GAT', 'GCN'] | hidden=[256, 128, 128] | skip=none
+
+Evaluating architecture 1/2 ...
+    [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+  -> Using arch: depth=4, len(ops)=4, len(hiddens)=4, skip=none
+  -> ops: ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE']
+  -> hidden_dims: [256, 128, 256, 128]
+    -> build_arch for NAS layer 0
+epoch (0 / 35) (Loss:0.10502783, ACU_loss:7.03686463)
+epoch (1 / 35) (Loss:0.03721998, ACU_loss:2.49373847)
+epoch (2 / 35) (Loss:0.02613554, ACU_loss:1.75108131)
+epoch (3 / 35) (Loss:0.02065662, ACU_loss:1.38399377)
+epoch (4 / 35) (Loss:0.01730531, ACU_loss:1.15945583)
+epoch (5 / 35) (Loss:0.01510606, ACU_loss:1.01210594)
+epoch (6 / 35) (Loss:0.01394455, ACU_loss:0.93428502)
+epoch (7 / 35) (Loss:0.01267430, ACU_loss:0.84917810)
+epoch (8 / 35) (Loss:0.01226013, ACU_loss:0.82142897)
+epoch (9 / 35) (Loss:0.01137829, ACU_loss:0.76234566)
+epoch (10 / 35) (Loss:0.01057289, ACU_loss:0.70838387)
+epoch (11 / 35) (Loss:0.00991889, ACU_loss:0.66456567)
+epoch (12 / 35) (Loss:0.00946536, ACU_loss:0.63417928)
+epoch (13 / 35) (Loss:0.00921157, ACU_loss:0.61717488)
+epoch (14 / 35) (Loss:0.00898103, ACU_loss:0.60172887)
+epoch (15 / 35) (Loss:0.00876364, ACU_loss:0.58716367)
+epoch (16 / 35) (Loss:0.00833223, ACU_loss:0.55825928)
+epoch (17 / 35) (Loss:0.00817532, ACU_loss:0.54774630)
+epoch (18 / 35) (Loss:0.00802269, ACU_loss:0.53752028)
+epoch (19 / 35) (Loss:0.00756184, ACU_loss:0.50664333)
+epoch (20 / 35) (Loss:0.00745695, ACU_loss:0.49961540)
+epoch (21 / 35) (Loss:0.00717978, ACU_loss:0.48104515)
+epoch (22 / 35) (Loss:0.00727610, ACU_loss:0.48749895)
+epoch (23 / 35) (Loss:0.00720523, ACU_loss:0.48275019)
+epoch (24 / 35) (Loss:0.00719025, ACU_loss:0.48174702)
+epoch (25 / 35) (Loss:0.00730383, ACU_loss:0.48935630)
+epoch (26 / 35) (Loss:0.00714854, ACU_loss:0.47895213)
+epoch (27 / 35) (Loss:0.00703652, ACU_loss:0.47144692)
+epoch (28 / 35) (Loss:0.00687271, ACU_loss:0.46047138)
+epoch (29 / 35) (Loss:0.00647529, ACU_loss:0.43384450)
+epoch (30 / 35) (Loss:0.00625445, ACU_loss:0.41904842)
+epoch (31 / 35) (Loss:0.00611947, ACU_loss:0.41000450)
+epoch (32 / 35) (Loss:0.00605900, ACU_loss:0.40595306)
+epoch (33 / 35) (Loss:0.00594153, ACU_loss:0.39808226)
+epoch (34 / 35) (Loss:0.00586590, ACU_loss:0.39301528)
+  Architecture 1 validation loss: 0.003253
+
+Evaluating architecture 2/2 ...
+    [normalize_arch] depth=3, len(ops)=3, len(hiddens)=3, skip=none
+  -> Using arch: depth=3, len(ops)=3, len(hiddens)=3, skip=none
+  -> ops: ['GraphLayer', 'GAT', 'GCN']
+  -> hidden_dims: [256, 128, 128]
+    -> build_arch for NAS layer 0
+epoch (0 / 35) (Loss:0.10701061, ACU_loss:7.16971077)
+epoch (1 / 35) (Loss:0.03901509, ACU_loss:2.61401125)
+epoch (2 / 35) (Loss:0.03100817, ACU_loss:2.07754716)
+epoch (3 / 35) (Loss:0.02518487, ACU_loss:1.68738632)
+epoch (4 / 35) (Loss:0.02218092, ACU_loss:1.48612185)
+epoch (5 / 35) (Loss:0.02257470, ACU_loss:1.51250460)
+epoch (6 / 35) (Loss:0.02165179, ACU_loss:1.45067018)
+epoch (7 / 35) (Loss:0.01885243, ACU_loss:1.26311265)
+epoch (8 / 35) (Loss:0.01861656, ACU_loss:1.24730930)
+epoch (9 / 35) (Loss:0.01672696, ACU_loss:1.12070643)
+epoch (10 / 35) (Loss:0.01520919, ACU_loss:1.01901562)
+epoch (11 / 35) (Loss:0.01436913, ACU_loss:0.96273161)
+epoch (12 / 35) (Loss:0.01355725, ACU_loss:0.90833549)
+epoch (13 / 35) (Loss:0.01255993, ACU_loss:0.84151526)
+epoch (14 / 35) (Loss:0.01171972, ACU_loss:0.78522092)
+epoch (15 / 35) (Loss:0.01133848, ACU_loss:0.75967798)
+epoch (16 / 35) (Loss:0.01080012, ACU_loss:0.72360810)
+epoch (17 / 35) (Loss:0.01032648, ACU_loss:0.69187393)
+epoch (18 / 35) (Loss:0.01036681, ACU_loss:0.69457635)
+epoch (19 / 35) (Loss:0.01025983, ACU_loss:0.68740846)
+epoch (20 / 35) (Loss:0.00983053, ACU_loss:0.65864533)
+epoch (21 / 35) (Loss:0.00945489, ACU_loss:0.63347763)
+epoch (22 / 35) (Loss:0.00960769, ACU_loss:0.64371493)
+epoch (23 / 35) (Loss:0.00988924, ACU_loss:0.66257920)
+epoch (24 / 35) (Loss:0.00932037, ACU_loss:0.62446475)
+epoch (25 / 35) (Loss:0.00889513, ACU_loss:0.59597388)
+epoch (26 / 35) (Loss:0.00866278, ACU_loss:0.58040596)
+epoch (27 / 35) (Loss:0.00863309, ACU_loss:0.57841728)
+epoch (28 / 35) (Loss:0.00851153, ACU_loss:0.57027251)
+epoch (29 / 35) (Loss:0.00870717, ACU_loss:0.58338042)
+epoch (30 / 35) (Loss:0.00881620, ACU_loss:0.59068526)
+epoch (31 / 35) (Loss:0.00930419, ACU_loss:0.62338078)
+epoch (32 / 35) (Loss:0.00906181, ACU_loss:0.60714154)
+epoch (33 / 35) (Loss:0.00833783, ACU_loss:0.55863449)
+epoch (34 / 35) (Loss:0.00841610, ACU_loss:0.56387891)
+  Architecture 2 validation loss: 0.007414
+
+Generation 2 Results:
+  Best validation loss in this gen: 0.003253
+  Best architecture in this gen: {'depth': 4, 'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none'}
+
+Generating next generation...
+  [GA] pick parents:
+    parent1: depth=4, skip=none
+      L1: op=GraphLayer hidden=256
+      L2: op=GAT        hidden=128
+      L3: op=GraphSAGE  hidden=256
+      L4: op=SAGE       hidden=128
+    parent2: depth=3, skip=none
+      L1: op=GraphLayer hidden=256
+      L2: op=GAT        hidden=128
+      L3: op=GCN        hidden=128
+    [crossover] cut=2, target_d=4, raw child: {'ops': ['GraphLayer', 'GAT', 'GraphLayer', 'GAT'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none', 'depth': 4}
+    [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+    -> mutate child
+    [mutate] change op at 0: GraphLayer -> GraphSAGE
+    [normalize_arch] depth=4, len(ops)=4, len(hiddens)=4, skip=none
+    -> child after norm: depth=4, len(ops)=4, len(hiddens)=4, skip=none
+
+========== Final Result ==========
+Best Architecture Overall: {'depth': 4, 'ops': ['GraphLayer', 'GAT', 'GraphSAGE', 'SAGE'], 'hidden_dims': [256, 128, 256, 128], 'skip': 'none'}
+Best Validation Loss: 0.002557
+Apply best_arch to all NAS branches (searchable_gnn_layers)
+  -> build_arch for NAS layer 0
+epoch (0 / 100) (Loss:0.10215572, ACU_loss:6.84443336)
+epoch (1 / 100) (Loss:0.03620765, ACU_loss:2.42591258)
+epoch (2 / 100) (Loss:0.02546605, ACU_loss:1.70622525)
+epoch (3 / 100) (Loss:0.01940169, ACU_loss:1.29991335)
+epoch (4 / 100) (Loss:0.01568940, ACU_loss:1.05118983)
+epoch (5 / 100) (Loss:0.01346379, ACU_loss:0.90207382)
+epoch (6 / 100) (Loss:0.01156592, ACU_loss:0.77491675)
+epoch (7 / 100) (Loss:0.01044984, ACU_loss:0.70013914)
+epoch (8 / 100) (Loss:0.00977402, ACU_loss:0.65485960)
+epoch (9 / 100) (Loss:0.00885019, ACU_loss:0.59296292)
+epoch (10 / 100) (Loss:0.00806053, ACU_loss:0.54005570)
+epoch (11 / 100) (Loss:0.00746029, ACU_loss:0.49983965)
+epoch (12 / 100) (Loss:0.00716325, ACU_loss:0.47993790)
+epoch (13 / 100) (Loss:0.00708714, ACU_loss:0.47483850)
+epoch (14 / 100) (Loss:0.00675717, ACU_loss:0.45273021)
+epoch (15 / 100) (Loss:0.00658351, ACU_loss:0.44109536)
+epoch (16 / 100) (Loss:0.00634270, ACU_loss:0.42496111)
+epoch (17 / 100) (Loss:0.00618475, ACU_loss:0.41437853)
+epoch (18 / 100) (Loss:0.00617337, ACU_loss:0.41361598)
+epoch (19 / 100) (Loss:0.00600257, ACU_loss:0.40217201)
+epoch (20 / 100) (Loss:0.00582288, ACU_loss:0.39013307)
+epoch (21 / 100) (Loss:0.00602935, ACU_loss:0.40396659)
+epoch (22 / 100) (Loss:0.00546542, ACU_loss:0.36618290)
+epoch (23 / 100) (Loss:0.00549813, ACU_loss:0.36837485)
+epoch (24 / 100) (Loss:0.00550021, ACU_loss:0.36851440)
+epoch (25 / 100) (Loss:0.00541731, ACU_loss:0.36295986)
+epoch (26 / 100) (Loss:0.00537421, ACU_loss:0.36007199)
+epoch (27 / 100) (Loss:0.00517670, ACU_loss:0.34683923)
+epoch (28 / 100) (Loss:0.00516535, ACU_loss:0.34607857)
+epoch (29 / 100) (Loss:0.00499836, ACU_loss:0.33489043)
+epoch (30 / 100) (Loss:0.00491297, ACU_loss:0.32916877)
+epoch (31 / 100) (Loss:0.00486760, ACU_loss:0.32612927)
+epoch (32 / 100) (Loss:0.00482923, ACU_loss:0.32355859)
+epoch (33 / 100) (Loss:0.00481007, ACU_loss:0.32227477)
+epoch (34 / 100) (Loss:0.00489678, ACU_loss:0.32808437)
+epoch (35 / 100) (Loss:0.00481461, ACU_loss:0.32257895)
+epoch (36 / 100) (Loss:0.00482318, ACU_loss:0.32315291)
+epoch (37 / 100) (Loss:0.00486436, ACU_loss:0.32591228)
+epoch (38 / 100) (Loss:0.00483250, ACU_loss:0.32377741)
+epoch (39 / 100) (Loss:0.00474004, ACU_loss:0.31758294)
+epoch (40 / 100) (Loss:0.00464321, ACU_loss:0.31109504)
+epoch (41 / 100) (Loss:0.00468344, ACU_loss:0.31379017)
+epoch (42 / 100) (Loss:0.00469218, ACU_loss:0.31437624)
+epoch (43 / 100) (Loss:0.00464626, ACU_loss:0.31129956)
+epoch (44 / 100) (Loss:0.00457334, ACU_loss:0.30641357)
+epoch (45 / 100) (Loss:0.00463316, ACU_loss:0.31042169)
+epoch (46 / 100) (Loss:0.00467368, ACU_loss:0.31313631)
+epoch (47 / 100) (Loss:0.00459531, ACU_loss:0.30788592)
+epoch (48 / 100) (Loss:0.00449448, ACU_loss:0.30113029)
+epoch (49 / 100) (Loss:0.00444169, ACU_loss:0.29759356)
+epoch (50 / 100) (Loss:0.00453711, ACU_loss:0.30398640)
+epoch (51 / 100) (Loss:0.00446369, ACU_loss:0.29906700)
+epoch (52 / 100) (Loss:0.00438762, ACU_loss:0.29397075)
+epoch (53 / 100) (Loss:0.00436306, ACU_loss:0.29232492)
+epoch (54 / 100) (Loss:0.00432529, ACU_loss:0.28979414)
+epoch (55 / 100) (Loss:0.00433556, ACU_loss:0.29048266)
+epoch (56 / 100) (Loss:0.00427835, ACU_loss:0.28664928)
+epoch (57 / 100) (Loss:0.00421381, ACU_loss:0.28232502)
+epoch (58 / 100) (Loss:0.00421116, ACU_loss:0.28214774)
+epoch (59 / 100) (Loss:0.00418372, ACU_loss:0.28030914)
+epoch (60 / 100) (Loss:0.00428980, ACU_loss:0.28741650)
+epoch (61 / 100) (Loss:0.00427455, ACU_loss:0.28639484)
+epoch (62 / 100) (Loss:0.00420342, ACU_loss:0.28162935)
+epoch (63 / 100) (Loss:0.00423956, ACU_loss:0.28405029)
+epoch (64 / 100) (Loss:0.00417601, ACU_loss:0.27979257)
+epoch (65 / 100) (Loss:0.00420653, ACU_loss:0.28183756)
+epoch (66 / 100) (Loss:0.00417802, ACU_loss:0.27992733)
+epoch (67 / 100) (Loss:0.00411171, ACU_loss:0.27548490)
+epoch (68 / 100) (Loss:0.00404783, ACU_loss:0.27120433)
+epoch (69 / 100) (Loss:0.00409069, ACU_loss:0.27407635)
+epoch (70 / 100) (Loss:0.00410748, ACU_loss:0.27520145)
+epoch (71 / 100) (Loss:0.00405987, ACU_loss:0.27201112)
+epoch (72 / 100) (Loss:0.00401717, ACU_loss:0.26915043)
+epoch (73 / 100) (Loss:0.00404905, ACU_loss:0.27128608)
+epoch (74 / 100) (Loss:0.00405453, ACU_loss:0.27165376)
+epoch (75 / 100) (Loss:0.00407697, ACU_loss:0.27315670)
+epoch (76 / 100) (Loss:0.00407437, ACU_loss:0.27298276)
+epoch (77 / 100) (Loss:0.00409461, ACU_loss:0.27433863)
+epoch (78 / 100) (Loss:0.00421920, ACU_loss:0.28268662)
+epoch (79 / 100) (Loss:0.00414193, ACU_loss:0.27750934)
+epoch (80 / 100) (Loss:0.00412377, ACU_loss:0.27629274)
+epoch (81 / 100) (Loss:0.00414888, ACU_loss:0.27797472)
+epoch (82 / 100) (Loss:0.00405848, ACU_loss:0.27191805)
+epoch (83 / 100) (Loss:0.00401665, ACU_loss:0.26911528)
+epoch (84 / 100) (Loss:0.00401872, ACU_loss:0.26925404)
+epoch (85 / 100) (Loss:0.00399496, ACU_loss:0.26766214)
+epoch (86 / 100) (Loss:0.00404030, ACU_loss:0.27070022)
+epoch (87 / 100) (Loss:0.00418243, ACU_loss:0.28022311)
+epoch (88 / 100) (Loss:0.00411630, ACU_loss:0.27579237)
+epoch (89 / 100) (Loss:0.00406493, ACU_loss:0.27235048)
+epoch (90 / 100) (Loss:0.00404457, ACU_loss:0.27098645)
+=========================** Result **============================
+
+F1 score: 0.8220426766107313
+precision: 0.9538461538461539
+recall: 0.7223739304569452
+
+========== Final Result ==========
+Best Architecture Overall: {'depth': 3, 'ops': ['GCN', 'GraphLayer', 'GraphSAGE'], 'hidden_dims': [128, 64, 128], 'skip': 'none'}
+Best Validation Loss: 0.459107
+Apply best_arch to all NAS branches (searchable_gnn_layers)
+  -> build_arch for NAS layer 0
+epoch (0 / 100) (Loss:0.10306516, ACU_loss:6.90536584)
+epoch (1 / 100) (Loss:0.03309313, ACU_loss:2.21723998)
+epoch (2 / 100) (Loss:0.02231151, ACU_loss:1.49487092)
+epoch (3 / 100) (Loss:0.01704144, ACU_loss:1.14177651)
+epoch (4 / 100) (Loss:0.01452467, ACU_loss:0.97315275)
+epoch (5 / 100) (Loss:0.01251141, ACU_loss:0.83826460)
+epoch (6 / 100) (Loss:0.01119283, ACU_loss:0.74991983)
+epoch (7 / 100) (Loss:0.01028359, ACU_loss:0.68900032)
+epoch (8 / 100) (Loss:0.00948301, ACU_loss:0.63536149)
+epoch (9 / 100) (Loss:0.00893790, ACU_loss:0.59883921)
+epoch (10 / 100) (Loss:0.00841909, ACU_loss:0.56407891)
+epoch (11 / 100) (Loss:0.00783864, ACU_loss:0.52518873)
+epoch (12 / 100) (Loss:0.00738556, ACU_loss:0.49483270)
+epoch (13 / 100) (Loss:0.00699639, ACU_loss:0.46875811)
+epoch (14 / 100) (Loss:0.00668948, ACU_loss:0.44819492)
+epoch (15 / 100) (Loss:0.00650725, ACU_loss:0.43598563)
+epoch (16 / 100) (Loss:0.00631726, ACU_loss:0.42325624)
+epoch (17 / 100) (Loss:0.00612261, ACU_loss:0.41021468)
+epoch (18 / 100) (Loss:0.00588977, ACU_loss:0.39461450)
+epoch (19 / 100) (Loss:0.00569867, ACU_loss:0.38181087)
+epoch (20 / 100) (Loss:0.00576705, ACU_loss:0.38639229)
+epoch (21 / 100) (Loss:0.00553608, ACU_loss:0.37091763)
+epoch (22 / 100) (Loss:0.00542752, ACU_loss:0.36364370)
+epoch (23 / 100) (Loss:0.00537677, ACU_loss:0.36024391)
+epoch (24 / 100) (Loss:0.00519066, ACU_loss:0.34777446)
+epoch (25 / 100) (Loss:0.00517158, ACU_loss:0.34649597)
+epoch (26 / 100) (Loss:0.00520149, ACU_loss:0.34849986)
+epoch (27 / 100) (Loss:0.00496445, ACU_loss:0.33261824)
+epoch (28 / 100) (Loss:0.00505820, ACU_loss:0.33889909)
+epoch (29 / 100) (Loss:0.00502442, ACU_loss:0.33663620)
+epoch (30 / 100) (Loss:0.00489496, ACU_loss:0.32796210)
+epoch (31 / 100) (Loss:0.00473595, ACU_loss:0.31730852)
+epoch (32 / 100) (Loss:0.00472611, ACU_loss:0.31664946)
+epoch (33 / 100) (Loss:0.00470088, ACU_loss:0.31495870)
+epoch (34 / 100) (Loss:0.00463306, ACU_loss:0.31041517)
+epoch (35 / 100) (Loss:0.00460130, ACU_loss:0.30828710)
+epoch (36 / 100) (Loss:0.00457739, ACU_loss:0.30668545)
+epoch (37 / 100) (Loss:0.00465790, ACU_loss:0.31207952)
+epoch (38 / 100) (Loss:0.00456857, ACU_loss:0.30609399)
+epoch (39 / 100) (Loss:0.00463957, ACU_loss:0.31085104)
+epoch (40 / 100) (Loss:0.00463110, ACU_loss:0.31028342)
+epoch (41 / 100) (Loss:0.00480369, ACU_loss:0.32184693)
+epoch (42 / 100) (Loss:0.00456096, ACU_loss:0.30558438)
+epoch (43 / 100) (Loss:0.00453109, ACU_loss:0.30358283)
+epoch (44 / 100) (Loss:0.00441623, ACU_loss:0.29588753)
+epoch (45 / 100) (Loss:0.00435644, ACU_loss:0.29188115)
+epoch (46 / 100) (Loss:0.00438085, ACU_loss:0.29351676)
+epoch (47 / 100) (Loss:0.00437218, ACU_loss:0.29293627)
+epoch (48 / 100) (Loss:0.00436422, ACU_loss:0.29240255)
+epoch (49 / 100) (Loss:0.00436292, ACU_loss:0.29231565)
+epoch (50 / 100) (Loss:0.00446037, ACU_loss:0.29884461)
+epoch (51 / 100) (Loss:0.00429996, ACU_loss:0.28809743)
+epoch (52 / 100) (Loss:0.00425433, ACU_loss:0.28503981)
+epoch (53 / 100) (Loss:0.00425784, ACU_loss:0.28527554)
+epoch (54 / 100) (Loss:0.00422659, ACU_loss:0.28318170)
+epoch (55 / 100) (Loss:0.00443063, ACU_loss:0.29685231)
+epoch (56 / 100) (Loss:0.00425369, ACU_loss:0.28499711)
+epoch (57 / 100) (Loss:0.00437095, ACU_loss:0.29285369)
+epoch (58 / 100) (Loss:0.00425761, ACU_loss:0.28526004)
+epoch (59 / 100) (Loss:0.00424779, ACU_loss:0.28460188)
+epoch (60 / 100) (Loss:0.00419744, ACU_loss:0.28122879)
+epoch (61 / 100) (Loss:0.00415615, ACU_loss:0.27846218)
+epoch (62 / 100) (Loss:0.00436206, ACU_loss:0.29225820)
+epoch (63 / 100) (Loss:0.00417178, ACU_loss:0.27950941)
+epoch (64 / 100) (Loss:0.00418535, ACU_loss:0.28041845)
+epoch (65 / 100) (Loss:0.00418581, ACU_loss:0.28044919)
+epoch (66 / 100) (Loss:0.00423142, ACU_loss:0.28350531)
+epoch (67 / 100) (Loss:0.00418992, ACU_loss:0.28072462)
+epoch (68 / 100) (Loss:0.00412716, ACU_loss:0.27651997)
+epoch (69 / 100) (Loss:0.00424613, ACU_loss:0.28449057)
+epoch (70 / 100) (Loss:0.00416310, ACU_loss:0.27892763)
+epoch (71 / 100) (Loss:0.00420853, ACU_loss:0.28197127)
+epoch (72 / 100) (Loss:0.00414897, ACU_loss:0.27798096)
+epoch (73 / 100) (Loss:0.00420307, ACU_loss:0.28160544)
+epoch (74 / 100) (Loss:0.00412046, ACU_loss:0.27607074)
+epoch (75 / 100) (Loss:0.00414391, ACU_loss:0.27764170)
+epoch (76 / 100) (Loss:0.00417654, ACU_loss:0.27982845)
+epoch (77 / 100) (Loss:0.00414334, ACU_loss:0.27760357)
+epoch (78 / 100) (Loss:0.00414795, ACU_loss:0.27791236)
+epoch (79 / 100) (Loss:0.00414281, ACU_loss:0.27756838)
+epoch (80 / 100) (Loss:0.00412144, ACU_loss:0.27613678)
+epoch (81 / 100) (Loss:0.00407952, ACU_loss:0.27332815)
+epoch (82 / 100) (Loss:0.00418019, ACU_loss:0.28007288)
+epoch (83 / 100) (Loss:0.00413710, ACU_loss:0.27718542)
+epoch (84 / 100) (Loss:0.00411409, ACU_loss:0.27564394)
+epoch (85 / 100) (Loss:0.00414068, ACU_loss:0.27742547)
+epoch (86 / 100) (Loss:0.00411356, ACU_loss:0.27560868)
+epoch (87 / 100) (Loss:0.00410942, ACU_loss:0.27533131)
+epoch (88 / 100) (Loss:0.00413983, ACU_loss:0.27736888)
+epoch (89 / 100) (Loss:0.00410102, ACU_loss:0.27476831)
+epoch (90 / 100) (Loss:0.00411963, ACU_loss:0.27601506)
+epoch (91 / 100) (Loss:0.00409161, ACU_loss:0.27413776)
+epoch (92 / 100) (Loss:0.00413946, ACU_loss:0.27734376)
+epoch (93 / 100) (Loss:0.00413510, ACU_loss:0.27705162)
+epoch (94 / 100) (Loss:0.00414488, ACU_loss:0.27770702)
+epoch (95 / 100) (Loss:0.00411720, ACU_loss:0.27585220)
+epoch (96 / 100) (Loss:0.00409950, ACU_loss:0.27466658)
+epoch (97 / 100) (Loss:0.00406280, ACU_loss:0.27220758)
+epoch (98 / 100) (Loss:0.00406648, ACU_loss:0.27245447)
+epoch (99 / 100) (Loss:0.00408312, ACU_loss:0.27356904)
+=========================** Result **============================
+
+F1 score: 0.8590710599444223
+precision: 0.995398773006135
+recall: 0.7553538175046555
+
+

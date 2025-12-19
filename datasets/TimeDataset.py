@@ -54,7 +54,7 @@ class TimeDataset(Dataset):
 
         # 根据模式确定滑动范围
         # 训练模式：使用步长滑动，减少样本重叠
-        # 测试模式：逐点滑动，最大化利用数据
+        # 逐点滑动，最大化利用数据
         rang = range(slide_win, total_time_len, slide_stride) if is_train else range(slide_win, total_time_len)
 
         for i in rang:
@@ -77,9 +77,9 @@ class TimeDataset(Dataset):
 
     def __getitem__(self, idx):
         """获取指定索引的数据样本"""
-        feature = self.x[idx].double()    # 输入特征 [节点数, 窗口大小]
-        y = self.y[idx].double()          # 预测目标 [节点数]
+        feature = self.x[idx].float()    # 输入特征 [节点数, 窗口大小]
+        y = self.y[idx].float()          # 预测目标 [节点数]
         edge_index = self.edge_index.long()  # 图结构的边索引
-        label = self.labels[idx].double()    # 样本标签
+        label = self.labels[idx].float()    # 样本标签
 
         return feature, y, label, edge_index

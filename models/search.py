@@ -1,99 +1,11 @@
-# # models/search.py
-# import copy
-# import os
-# import random
-# import torch
-#
-# from train import train     # 你的训练过程:contentReference[oaicite:0]{index=0}
-# from test import test       # 返回 (avg_loss, result):contentReference[oaicite:1]{index=1}
-#
-# def sample_arch(search_space, max_depth=3):
-#     """从搜索空间随机采样一个架构"""
-#     depth = random.choice(search_space["depth"])
-#     ops = [random.choice(search_space["op_candidates"]) for _ in range(depth)]
-#     hiddens = [random.choice(search_space["hidden_candidates"]) for _ in range(depth)]
-#     skip = random.choice(search_space["skip_candidates"])
-#     return {
-#         "depth": depth,
-#         "ops": ops,
-#         "hidden_dims": hiddens,
-#         "skip": skip
-#     }
-#
-# def reset_seed(seed=0):
-#     random.seed(seed)
-#     torch.manual_seed(seed)
-#     torch.cuda.manual_seed(seed)
-#     torch.cuda.manual_seed_all(seed)
-#
-# def random_search(
-#         make_model_fn,              # () -> 一个新的、未训练的GDN实例 (use_nas=True)
-#         train_dataloader,
-#         val_dataloader,
-#         base_train_config: dict,    # 原训练配置，函数内部会拷贝并缩短epoch
-#         num_samples: int = 20,
-#         short_epochs: int = 10,
-#         device: str = "cuda",
-#         tmp_save_dir: str = "./pretrained/nas_tmp/"
-# ):
-#     """
-#     返回最优的 arch_config (以验证集MSE最小为目标)
-#     """
-#     os.makedirs(tmp_save_dir, exist_ok=True)
-#
-#     best_val = float("inf")
-#     best_arch = None
-#
-#     for i in range(num_samples):
-#         model = make_model_fn().to(device)
-#
-#         # 从可搜索层拿到搜索空间
-#         ss = model.get_search_space()   # 通过get_search_space获取search_space
-#         if ss is None:
-#             print(f"Model does not support NAS. Skipping {i+1}/{num_samples}")
-#             continue
-#
-#         arch = sample_arch(ss)
-#
-#         # 应用到模型
-#         if model.searchable_gnn:
-#             model.searchable_gnn.build_arch(arch)
-#
-#         # 训练若干 epoch（短训）
-#         cfg = copy.deepcopy(base_train_config)
-#         cfg["epoch"] = short_epochs
-#         tmp_path = os.path.join(tmp_save_dir, f"nas_{i}.pt")
-#
-#
-#
-#         train(
-#             model=model,
-#             save_path=tmp_path,
-#             config=cfg,
-#             train_dataloader=train_dataloader,
-#             val_dataloader=val_dataloader
-#         )
-#
-#         # 用 val_dataloader 评估 MSE
-#         val_loss, _ = test(model, val_dataloader)   # 返回第一个是avg MSE:contentReference[oaicite:2]{index=2}
-#
-#         print(f"[{i+1}/{num_samples}] arch={arch}  val_loss={val_loss:.6f}")
-#
-#         if val_loss < best_val:
-#             best_val = val_loss
-#             best_arch = arch
-#
-#     print(f"[NAS] Best arch: {best_arch}, val_loss={best_val:.6f}")
-#     return best_arch
 import copy
+import logging
 import os
 import random
-import torch
-import logging
 from datetime import datetime
 
-from train import train
 from test import test
+from train import train
 
 log_dir = "../log"
 os.makedirs(log_dir, exist_ok=True)
@@ -105,27 +17,6 @@ logging.basicConfig(
         logging.StreamHandler()  # 同时输出到控制台
     ]
 )
-
-
-# ------------------ 新增：复杂度惩罚辅助函数 ------------------ #
-def compute_complexity_penalty(arch, max_depth, max_hidden):
-    """
-    简单版本的“复杂度”：depth 越大、hidden 越大惩罚越多。
-    返回：depth_pen, hidden_pen, total_pen
-    """
-    depth = max(1, int(arch["depth"]))
-    hids = arch["hidden_dims"]
-    if len(hids) == 0:
-        mean_hidden = max_hidden
-    else:
-        mean_hidden = sum(hids) / float(len(hids))
-
-    # 归一化到 [0, 1] 左右
-    depth_pen = depth / float(max_depth)
-    hidden_pen = mean_hidden / float(max_hidden)
-    total_pen = depth_pen + hidden_pen
-    return depth_pen, hidden_pen, total_pen
-
 
 # ------------ helpers: 采样/归一化/交叉/变异 ------------
 def _nearest_allowed_depth(d, allowed_depths):
@@ -222,6 +113,17 @@ def crossover(parent1, parent2, search_space):
     logging.info(f"    [crossover] cut={cut}, target_d={target_d}, raw child: {child}")
     return normalize_arch(child, search_space)
 
+def arch_to_key(arch):
+    """
+    把一个架构 arch 转成可哈希的 key，方便用来判重
+    """
+    return (
+        int(arch["depth"]),
+        tuple(arch["ops"]),
+        tuple(arch["hidden_dims"]),
+        arch.get("skip", "none"),
+    )
+
 
 def mutate(arch, search_space, p_change_depth=0.3):
     """
@@ -288,14 +190,22 @@ def sample_arch(search_space):
         "skip": skip
     }
 
+def tournament_select(pop_with_fitness, k=3):
+    """
+    锦标赛选择:
+      pop_with_fitness: [(arch, fitness), ...]，fitness 越小越好（你这里=1-AUC）
+      k: 每次参与锦标赛的个体数
+    返回: 被选中的 arch
+    """
+    # 如果种群太小，直接退化成随机选
+    if len(pop_with_fitness) <= k:
+        arch, _ = min(pop_with_fitness, key=lambda x: x[1])
+        return arch
 
-# 重置随机种子
-def reset_seed(seed=0):
-    random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-
+    competitors = random.sample(pop_with_fitness, k)
+    # fitness 越小越好
+    competitors.sort(key=lambda x: x[1])
+    return competitors[0][0]
 
 # 遗传算法搜索策略
 def genetic_algorithm(
@@ -303,12 +213,13 @@ def genetic_algorithm(
         train_dataloader,
         val_dataloader,
         base_train_config: dict,
-        num_generations: int = 2,
-        population_size: int = 2,
+        num_generations: int = 15,
+        population_size: int = 20,
         mutation_rate: float = 0.3,
         device: str = "cuda",
         tmp_save_dir: str = "./pretrained/nas_tmp/"
 ):
+
     os.makedirs(tmp_save_dir, exist_ok=True)
 
     # 先造一个模型拿 search_space，就不每次造了
@@ -334,12 +245,17 @@ def genetic_algorithm(
                   f"ops={arch['ops']} | "
                   f"hidden={arch['hidden_dims']} | "
                   f"skip={arch['skip']}")
+            logging.info(f"  [{idx + 1}] depth={arch['depth']} | "
+                         f"ops={arch['ops']} | "
+                         f"hidden={arch['hidden_dims']} | "
+                         f"skip={arch['skip']}")
 
-        # 评估种群的适应度（验证集上的表现）
-        val_losses = []
+        # 评估种群的适应度（这里适应度=1-AUC，越小越好）
+        val_losses = []  # 实际装的是 (arch, fitness)，只是变量名沿用
         for idx, arch in enumerate(population):
             print(f"\nEvaluating architecture {idx + 1}/{len(population)} ...")
             logging.info(f"\nEvaluating architecture {idx + 1}/{len(population)} ...")
+
             # 防御性再 normalize 一次，确保是合法结构
             arch = normalize_arch(arch, search_space)
 
@@ -356,34 +272,34 @@ def genetic_algorithm(
             logging.info(f"  -> hidden_dims: {arch['hidden_dims']}")
 
             # 统一取可搜索的 GNN 层：支持 searchable_gnn_layers 或 searchable_gnn
-            nas_layers = None
             model = make_model_fn().to(device)
             if getattr(model, "searchable_gnn_layers", None) is not None:
                 nas_layers = list(model.searchable_gnn_layers)
             elif getattr(model, "searchable_gnn", None) is not None:
                 nas_layers = [model.searchable_gnn]
+            else:
+                nas_layers = []
 
             # 对所有 NAS 层应用同一个 arch（多分支共享架构）
             for l_id, layer in enumerate(nas_layers):
                 print(f"    -> build_arch for NAS layer {l_id}")
+                logging.info(f"    -> build_arch for NAS layer {l_id}")
                 layer.build_arch(arch)
 
             cfg = copy.deepcopy(base_train_config)
-            cfg["epoch"] = min(35, cfg.get("epoch", 35))  # 短训
+            cfg["epoch"] = min(10, cfg.get("epoch", 10))  # 短训
             tmp_path = os.path.join(tmp_save_dir, f"nas_gen{generation}_idx{idx}.pt")
 
-            train(
-                model=model,
-                save_path=tmp_path,
-                config=cfg,
-                train_dataloader=train_dataloader,
-                val_dataloader=val_dataloader
-            )
-
-            val_loss, _ = test(model, val_dataloader)
+            train_loss_list, val_metric_list,val_loss=train(model=model, save_path=tmp_path, config=cfg, train_dataloader=train_dataloader,
+                  val_dataloader=val_dataloader)
+            print("val_loss:",val_loss)
+            # 使用带标签的数据（search_val_dataloader）做异常检测评估
+            # 1) 先在 search_val_dataloader 上跑一次 test，拿到预测/真值/标签
             val_losses.append((arch, val_loss))
             print(f"  Architecture {idx + 1} validation loss: {val_loss:.6f}")
             logging.info(f"  Architecture {idx + 1} validation loss: {val_loss:.6f}")
+
+            print(f"  -> Validation losses: {val_losses}")
 
         # 如果这一代一个都没成功评估，直接 break
         if len(val_losses) == 0:
@@ -409,54 +325,90 @@ def genetic_algorithm(
             print(f"  >>> New global best found! val_loss={best_val_loss:.6f}")
             logging.info(f"  >>> New global best found! val_loss={best_val_loss:.6f}")
 
-        # 生成下一代种群
-        next_generation = [best_arch_in_pop]  # 精英保留
-        print(f"\nGenerating next generation...")
-        logging.info("\nGenerating next generation...")
+        # ===== 生成下一代种群（除了最后一代） =====
+        if generation < num_generations - 1:
+            # 生成下一代种群
+            # 可以保留一个精英做直接继承
+            next_generation = [best_arch_in_pop]  # 精英保留
+            used_keys = {arch_to_key(best_arch_in_pop)}
+            print(f"\nGenerating next generation...")
+            logging.info("\nGenerating next generation...")
 
-        # 精英集合：前 top_k 个
-        top_k = min(10, len(val_losses))
-        elite_pool = [arch for arch, _ in val_losses[:top_k]]
+            # 锦标赛规模，通常取 2~5 之间
+            tournament_k = min(3, len(val_losses))
 
-        while len(next_generation) < population_size:
-            # 选父母
-            if len(elite_pool) >= 2:
-                p1, p2 = random.sample(elite_pool, 2)
-            else:
-                p1 = p2 = elite_pool[0]
+            while len(next_generation) < population_size:
+                # 使用锦标赛选择两个父母；val_losses: [(arch, fitness), ...]
+                p1 = tournament_select(val_losses, k=tournament_k)
+                p2 = tournament_select(val_losses, k=tournament_k)
 
-            print(f"  [GA] pick parents:")
-            logging.info(f"  [GA] pick parents:")
+                print(f"  [GA] pick parents (tournament k={tournament_k}):")
+                logging.info(f"  [GA] pick parents (tournament k={tournament_k}):")
 
-            print(f"    parent1: depth={p1['depth']}, skip={p1.get('skip', 'none')}")
-            for i, (op, hid) in enumerate(zip(p1['ops'], p1['hidden_dims']), 1):
-                print(f"      L{i}: op={op:<10} hidden={hid}")
-                logging.info(f"      L{i}: op={op:<10} hidden={hid}")
+                print(f"    parent1: depth={p1['depth']}, skip={p1.get('skip', 'none')}")
+                logging.info(f"    parent1: depth={p1['depth']}, skip={p1.get('skip', 'none')}")
+                for i, (op, hid) in enumerate(zip(p1['ops'], p1['hidden_dims']), 1):
+                    print(f"      L{i}: op={op:<10} hidden={hid}")
+                    logging.info(f"      L{i}: op={op:<10} hidden={hid}")
 
-            print(f"    parent2: depth={p2['depth']}, skip={p2.get('skip', 'none')}")
-            for i, (op, hid) in enumerate(zip(p2['ops'], p2['hidden_dims']), 1):
-                print(f"      L{i}: op={op:<10} hidden={hid}")
-                logging.info(f"      L{i}: op={op:<10} hidden={hid}")
+                print(f"    parent2: depth={p2['depth']}, skip={p2.get('skip', 'none')}")
+                logging.info(f"    parent2: depth={p2['depth']}, skip={p2.get('skip', 'none')}")
+                for i, (op, hid) in enumerate(zip(p2['ops'], p2['hidden_dims']), 1):
+                    print(f"      L{i}: op={op:<10} hidden={hid}")
+                    logging.info(f"      L{i}: op={op:<10} hidden={hid}")
 
-            child = crossover(p1, p2, search_space)
+                # 交叉 + 变异
+                child = crossover(p1, p2, search_space)
 
-            if random.random() < mutation_rate:
-                print("    -> mutate child")
-                logging.info("    -> mutate child")
-                child = mutate(child, search_space)
-            else:
-                print("    -> no mutation")
-                logging.info("    -> no mutation")
-            print(f"    -> child after norm: depth={child['depth']}, "
-                  f"len(ops)={len(child['ops'])}, len(hiddens)={len(child['hidden_dims'])}, "
-                  f"skip={child['skip']}")
-            logging.info(f"    -> child after norm: depth={child['depth']}, "
-                         f"len(ops)={len(child['ops'])}, len(hiddens)={len(child['hidden_dims'])}, "
-                         f"skip={child['skip']}")
+                if random.random() < mutation_rate:
+                    print("    -> mutate child")
+                    logging.info("    -> mutate child")
+                    child = mutate(child, search_space)
+                else:
+                    print("    -> no mutation")
+                    logging.info("    -> no mutation")
 
-            next_generation.append(child)
+                child = normalize_arch(child, search_space)
 
-        population = next_generation
+                # ---------- 去重逻辑开始 ----------
+                child_key = arch_to_key(child)
+                retry = 0
+                max_retry = 5
+
+                # 如果重复,就多尝试几次变异
+                while child_key in used_keys and retry < max_retry:
+                    print("    -> duplicate child, re-mutate")
+                    logging.info("    -> duplicate child, re-mutate")
+                    child = mutate(child, search_space)
+                    child = normalize_arch(child, search_space)
+                    child_key = arch_to_key(child)
+                    retry += 1
+
+                # 如果还重复，就干脆随机采一个全新架构
+                if child_key in used_keys:
+                    print("    -> still duplicate after re-mutate, resample new arch")
+                    logging.info("    -> still duplicate after re-mutate, resample new arch")
+                    child = normalize_arch(sample_arch(search_space), search_space)
+                    child_key = arch_to_key(child)
+                # ---------- 去重逻辑结束 ----------
+
+                print(f"    -> child after norm: depth={child['depth']}, "
+                      f"len(ops)={len(child['ops'])}, len(hiddens)={len(child['hidden_dims'])}, "
+                      f"skip={child['skip']}")
+                logging.info(f"    -> child after norm: depth={child['depth']}, "
+                             f"len(ops)={len(child['ops'])}, len(hiddens)={len(child['hidden_dims'])}, "
+                             f"skip={child['skip']}")
+
+                next_generation.append(child)
+
+            population = next_generation
+        else:
+            # 最后一代：只评估，不再交叉 / 变异
+            print("\nReached last generation, skip crossover/mutation.")
+            logging.info("\nReached last generation, skip crossover/mutation.")
+            # 不再更新 population，直接结束循环
+            break
+
 
     print(f"\n========== Final Result ==========")
     print(f"Best Architecture Overall: {best_arch}")
@@ -474,8 +426,8 @@ def search_with_genetic_algorithm(
         train_dataloader,
         val_dataloader,
         base_train_config: dict,
-        num_generations: int = 2,
-        population_size: int = 2,
+        num_generations: int = 15,
+        population_size: int = 20,
         mutation_rate: float = 0.3,
         device: str = "cuda",
         tmp_save_dir: str = "./pretrained/nas_tmp/"
@@ -483,6 +435,15 @@ def search_with_genetic_algorithm(
     """
     使用遗传算法搜索最优架构
     """
-    return genetic_algorithm(make_model_fn, train_dataloader, val_dataloader, base_train_config,
-                             num_generations=num_generations, population_size=population_size,
-                             mutation_rate=mutation_rate, device=device, tmp_save_dir=tmp_save_dir)
+    return genetic_algorithm(
+        make_model_fn,
+        train_dataloader,
+        val_dataloader,
+        base_train_config,
+        num_generations=num_generations,
+        population_size=population_size,
+        mutation_rate=mutation_rate,
+        device=device,
+        tmp_save_dir=tmp_save_dir,
+    )
+
